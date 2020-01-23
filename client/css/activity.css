@@ -1,0 +1,18 @@
+.activity-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 29px;
+  line-height: 120%;
+  letter-spacing: 0.75px;
+}
+
+.activities-2-title {
+  position: absolute;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 29px;
+  line-height: 100%;
+  display: flex;
+  align-items: flex-end;
+  letter-spacing: 0.75px;
+}

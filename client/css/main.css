@@ -1,0 +1,78 @@
+.box1 {
+  padding-left: 106px;
+  padding-top: 74px;
+}
+
+.img-box {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.box1 .text1 {
+  margin-top: 146px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 29px;
+  line-height: 100%;
+  letter-spacing: 0.75px;
+}
+
+.box1 .text2 {
+  margin-top: 7px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 47px;
+  line-height: 100%;
+  letter-spacing: -0.25px;
+}
+
+.box1 .text3 {
+  margin-top: 24px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 150%;
+  color: #fff;
+}
+
+.register-btn {
+  background: #eecd02;
+  border-radius: 29px;
+  border: none;
+  margin-top: 22px;
+  padding: 9px 31px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 150%;
+  text-align: center;
+  color: #093f84;
+  border-radius: 29px;
+}
+
+.mb-bg {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .img-box {
+    display: none;
+  }
+
+  .mb-bg {
+    position: absolute;
+    display: block;
+    width: 100%;
+  }
+
+  .box1 {
+    padding-left: 10px;
+    padding-top: 24px;
+  }
+
+  .box1 .text2 {
+    font-size: 33px;
+  }
+}
