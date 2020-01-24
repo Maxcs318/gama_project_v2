@@ -17,17 +17,18 @@
             return json_encode($newsAll);  
             
         }
-        // // get News
-        // public function get_news($pagenow)
-        // {
-        //     // limit(1,2)  1 แรกคือจำนวน row ที่ต้องการ 2 หลัง คือ เริ่มจาก index ที่เท่าไหร่     
-        //     $number_of_rows = 10;
-        //     $index_start = ($pagenow-1)*10;
-        //     $news_result = $this->db->limit($number_of_rows,$index_start)->get($this->news)->result(); 
-        //     $news_row_all = $this->db->from($this->news)->count_all_results();
-        //     $result = [$news_row_all,$news_result];
-        //     return json_encode($result);      
-        // }
+        // get News
+        public function get_news($pagenow)
+        {
+            // limit(1,2)  1 แรกคือจำนวน row ที่ต้องการ 2 หลัง คือ เริ่มจาก index ที่เท่าไหร่     
+            $this->db->order_by('n_id', 'DESC');
+            $number_of_rows = 6;
+            $index_start = ($pagenow-1)*$number_of_rows;
+            $news_result = $this->db->limit($number_of_rows,$index_start)->get($this->news)->result(); 
+            $news_row_all = $this->db->from($this->news)->count_all_results();
+            $result = [$news_row_all,$news_result];
+            return json_encode($result);      
+        }
         // get this new
         public function get_this_news($id)
         {   

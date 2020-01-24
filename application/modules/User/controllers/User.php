@@ -93,7 +93,7 @@
                 $typeF = strrev($nameF);
                 $_FILES['userfile']['name'] = $ranSTR.'.'.$typeF;
                 $config = array(
-                    'upload_path'   => $_SERVER["DOCUMENT_ROOT"].'assets/Profile_Image/',
+                    'upload_path'   => './../public/assets/Profile_Image/',
                     'allowed_types' => '*',
                     'max_size'      => '0',
                 );

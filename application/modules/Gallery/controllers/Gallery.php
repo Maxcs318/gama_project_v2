@@ -50,7 +50,7 @@
                 $typeF = strrev($nameF);
                 $_FILES['userfile']['name'] = $ranSTR.'.'.$typeF;
                 $config = array(
-                    'upload_path'   => $_SERVER["DOCUMENT_ROOT"].'assets/Gallery/',
+                    'upload_path'   => './../public/assets/Gallery/',
                     'allowed_types' => '*',
                     'max_size'      => '0',
                 );
@@ -123,7 +123,7 @@
             $gallery = (array)json_decode($this->input->post('gallery'));
             // echo json_encode($gallery);
             $config = array(
-                'upload_path'   => $_SERVER["DOCUMENT_ROOT"].'assets/Gallery/',
+                'upload_path'   => './../public/assets/Gallery/',
                 'allowed_types' => '*',
                 'max_size'      => '0',
             );
