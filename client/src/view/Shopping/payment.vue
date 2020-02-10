@@ -1,15 +1,15 @@
 <template>
     <div class="container">
-        <div class="row">
+        <div class="row" v-if="Order">
             <div class="col-lg-4 col-xs-12"></div>
             <div class="col-lg-4 col-xs-12">
                 <form @submit.prevent="submitPay">  
                     <h5><center>Order Code : {{Order.o_code_order}} <br> Price : {{Order.o_total_price}} ฿</center></h5>                    
                     Title
-                    <input type="text" class="form-control" v-model="money_transfer.mtf_title" ><br>
+                    <input type="text" class="form-control" v-model="money_transfer.mtf_title" required ><br>
                     <div v-if="Payment!=''">
                         Payment
-                        <select class="form-control" v-model="money_transfer.mtf_payments_id" >
+                        <select class="form-control" v-model="money_transfer.mtf_payments_id" required >
                             <option selected disabled value=""> - - No Select - - </option>
                             <option v-for="(pay ,index) in Payment" :key="index" :value="pay.pm_id" >
                                 {{ pay.pm_title }}
@@ -19,7 +19,7 @@
                     <div v-if="money_transfer.mtf_payments_id==1">
                         <br>
                         Banking
-                        <select class="form-control" v-model="money_transfer.mtf_banking_id" >
+                        <select class="form-control" v-model="money_transfer.mtf_banking_id" required>
                             <option disabled selected value=""> - - No Select - - </option>
                             <option v-for="(bk ,index) in Banking" :key="index" :value="bk.b_id"  @click="select_banking(bk)">
                                 {{ bk.b_name }}
@@ -45,7 +45,7 @@
                             </center>
                             <br>
                             <button type="button" class="form-control btn-success col-lg-6" @click="ChooseFilesImage"> Choose Image Slip </button>
-                            <input id="chooseImage" ref="filesimage" style="display: none;" type="file" @change="handleFilesImage">
+                            <input id="chooseImage" ref="filesimage" style="display: none;" type="file" @change="handleFilesImage" required>
                             <br>
                     <p v-if="date_now!=''"> Transfer Date : {{money_transfer.mtf_date}} </p>
                     <date-pick  
@@ -81,6 +81,7 @@
 <script>
 import DatePick from 'vue-date-pick';
 import 'vue-date-pick/dist/vueDatePick.css';
+import axios from "axios";
 
 export default {
     data(){
@@ -95,6 +96,22 @@ export default {
             },
             url: null,
             fileimage:'',
+
+            data_load: false,
+
+            data_order:'',
+            data_order_status:'',
+            data_order_items:'',
+            data_shipping_address:'',
+            data_moneytransfer:'',
+            data_payment:'',
+            data_banking:'',
+
+            data_payment_all:'',
+            data_load_payment_all:false,
+
+            data_banking_all:'',
+            data_load_banking_all:false
         }
     },
     components: {DatePick},
@@ -125,27 +142,70 @@ export default {
             FD.append('own_id',JSON.stringify(this.$store.state.log_on))
             this.$store.dispatch("Money_Transfer_Insert",FD)
             swal({title: "Confirm Success.",icon: "success",});
-            this.$router.push({name:'order',params:{CodeOrder:this.Order.o_code_order}})
+
+            setTimeout(() => {
+                this.$router.push({name:'order',params:{CodeOrder:this.Order.o_code_order}})
+            },1000);
         },
         back_to_see_list(){
             this.$router.go(-1)
         },
     },
+    watch:{
+        $route (to, from){
+            this.data_load = false;
+        },
+    },
     computed:{
         Order(){
-            var od = this.$store.getters.getMy_Order[0] 
-            for(var i=0; i<od.length; i++){
-                if(od[i].o_code_order == this.$route.params.CodeOrder){
-                    return od[i]
-                }
+            var order_code = this.$route.params.CodeOrder
+            if(this.data_load==false){
+                var FD = new FormData();
+                FD.append("order_code", JSON.stringify(order_code));
+
+                axios.post(this.$store.getters.getBase_Url+'Order/get_order_by_code',FD)
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_order = response.data[0],
+                    this.data_order_items = response.data[1],
+                    this.data_order_status = response.data[2],
+                    this.data_shipping_address = response.data[3],
+                    this.data_moneytransfer = response.data[4],
+                    this.data_payment = response.data[5],
+                    this.data_banking = response.data[6]
+
+                    if(response.data[0].o_status_id > 1){
+                        this.$router.go(-1)
+                        // this.$router.push({name:'order',params:{CodeOrder:this.data_order.o_code_order}})
+                    }
+                })
+                this.data_load = true
             }
-            // return this.$router.go(-1)
+            return this.data_order
         },
         Payment(){
-            return this.$store.getters.getPayments
+            if(this.data_load_payment_all==false){
+                axios.get(this.$store.getters.getBase_Url+"Payment/get_all_payment")
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_payment_all = response.data
+                })
+                this.data_load_payment_all=true
+            }
+            var payment_all = this.data_payment_all
+            return payment_all 
         },
         Banking(){
-            return this.$store.getters.getBanking
+            if(this.data_load_banking_all==false){
+                axios.get(this.$store.getters.getBase_Url+"Banking/get_all_banking")
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_banking_all = response.data
+                })
+                this.data_load_banking_all=true
+            }
+            var banking_all = this.data_banking_all
+            return banking_all 
         },
         date_now(){
             var today = new Date();
@@ -153,10 +213,6 @@ export default {
                 this.money_transfer.mtf_date = date
             return date
         }
-    },
-    created(){
-      this.$store.dispatch("initDataPayment")
-      this.$store.dispatch("initDataBanking")
     }
 }
 </script>

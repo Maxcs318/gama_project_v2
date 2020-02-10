@@ -50,10 +50,17 @@ import TheEvent from "../components/WelcomePage/Event";
 import Register from "../components/WelcomePage/Register";
 import Sponsor from "../components/WelcomePage/Sponsor";
 export default {
-  methods: {
-    scrollToTop() {
-      window.scrollTo(0, 0);
-    }
+  // methods: {
+  //   scrollToTop() {
+  //     // window.scrollTo(0, 0);
+  //   }
+  // },
+  watch:{
+    $route (to, from, next){
+      setTimeout(() => {
+        window.scrollTo(0,0);        
+      }, 10)
+    },
   },
   components: {
     carousel: Carousel,
@@ -67,11 +74,7 @@ export default {
   },
   created() {
     this.$store.dispatch("initApp");
-    //   this.$store.dispatch("initDataNews")
-    //   this.$store.dispatch("initDataArticle")
-    //   this.$store.dispatch("initDataProduct")
-    //   this.$store.dispatch("initDataVideos")
-    //   this.$store.dispatch("initDataVideo_Room")
+    
   }
 };
 </script>

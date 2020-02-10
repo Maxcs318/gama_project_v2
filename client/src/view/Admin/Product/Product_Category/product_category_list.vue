@@ -39,12 +39,17 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
-    // data() {
-    //     return {
-            
-    //     };
-    // },
+    data() {
+        return {
+            data_product_category:'',
+            data_load:false,
+
+            data_check_product_category:0,
+            check_product_category:null
+        };
+    },
     methods:{
         add_product_category(){
             this.$router.push('/addproduct_category')
@@ -53,26 +58,48 @@ export default {
             this.$router.push({name:'editproduct_category',params:{Product_CategoryID:this_product_category}});
         },
         deleteProduct_Category(this_product_category){
-            // console.log(this_product_category)
-            var FD  = new FormData()
-            FD.append('product_categoryID',JSON.stringify(this_product_category))
-            FD.append('creator',JSON.stringify(this.$store.state.log_on))
-            this.$swal({
-                title: "Are you sure?",
-                text: "You want delete this Product Category ID "+this_product_category,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+
+            axios.get(this.$store.getters.getBase_Url+'Product/check_product_and_product_category/'+this_product_category)
+            .then(response => {
+                // console.log(response.data)
+                this.data_check_product_category = response.data,   
+                this.check_product_category = 'success'
             })
-            .then((willDelete) => {
-                if (willDelete) {
-                    this.$store.dispatch("Delete_Product_Category",FD)
-                    swal({title: "Delete Success.",icon: "success",});
-                } else {
-                    // swal("Your imaginary file is safe!");
+            setTimeout(() => {
+                if(this.data_check_product_category == 0 && this.check_product_category == 'success'){
+                    var FD  = new FormData()
+                    FD.append('product_categoryID',JSON.stringify(this_product_category))
+                    FD.append('creator',JSON.stringify(this.$store.state.log_on))
+                    this.$swal({
+                        title: "Are you sure?",
+                        text: "You want delete this Product Category ID "+this_product_category,
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            this.$store.dispatch("Delete_Product_Category",FD)
+                            swal({title: "Delete Success.",icon: "success",});
+                            setTimeout(() => {
+                                this.data_load=false
+                            },100);
+                        } else {
+                            // swal("Your imaginary file is safe!");
+                        }
+                    })
+                }else{
+                    swal({title: "ประเภทสินค้านี้ ไม่สามารถลบได้",text: "เนื่องจากมี สินค้า บางรายการใช้ประเภทสินค้านี้อยู่",icon: "warning",});
                 }
-            })
+            },100);
+            this.data_check_product_category = 0   
+            this.check_product_category = null
         }
+    },
+    watch:{
+        $route (to, from){
+            this.data_load = false;
+        },
     },
     computed:{
         the_user(){
@@ -83,12 +110,17 @@ export default {
             return user
         },
         product_category(){
-            return this.$store.getters.getProduct_Category
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+'Product/get_all_product_category')
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_product_category = response.data
+                })
+                this.data_load = true
+            }
+            var product_category_all = this.data_product_category
+            return product_category_all
         }
-    },
-    created(){
-        this.$store.dispatch("initDataProduct_Category");
-
     }
 }
 </script>

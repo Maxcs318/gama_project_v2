@@ -23,6 +23,48 @@
         {
             echo $this->academic_article_model->get_all_academic_article();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get academic_article
+        public function get_academic_article($number_of_rows,$category,$pagenow)
+        {
+            echo $this->academic_article_model->get_academic_article($number_of_rows,$category,$pagenow);
+        }
+        // get this academic_article
+        public function get_this_academic_article($id)
+        {
+            $academic_article = json_decode($this->academic_article_model->get_this_academic_article($id));
+            if(sizeof($academic_article)==0){
+                $files_upload = false;
+            }else{
+                $key = $academic_article[0]->aa_file_key;
+                $files_upload = json_decode($this->Files_Upload_model->get_file_by_key($key));
+            }
+            $academic_article_and_files = json_encode([$academic_article,$files_upload]);
+            echo $academic_article_and_files;
+        }
+        // get all academic_article like
+        public function get_all_academic_article_like($title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->academic_article_model->get_all_academic_article_like($title_search);
+        }
+        
+        // academic_article_category
+        public function get_this_academic_article_category($id)
+        {
+            $academic_article_category = json_decode($this->academic_article_model->get_this_academic_article_category($id));
+            
+            echo json_encode($academic_article_category);
+        }
+        //get random academic_article
+        public function get_random_academic_article($pcs)
+        {
+            echo $this->academic_article_model->get_random_academic_article($pcs);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get all Academic Article_Category
         public function get_all_academic_article_category()
         {
@@ -342,6 +384,10 @@
                 }
             }
         // delete academic article category
+        public function check_academic_article_and_article_academic_category($id)
+        {
+            echo $this->academic_article_model->check_academic_article_and_article_academic_category($id);
+        }
         public function delete_academic_article_category()
         {
             // check status for delete

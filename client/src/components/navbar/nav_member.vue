@@ -27,7 +27,7 @@
         </b-navbar-nav>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="/articles/1" class="nav-menu">บทความ</router-link>
+            <router-link to="/articles/all/1" class="nav-menu">บทความ</router-link>
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav>
@@ -42,7 +42,7 @@
         </b-navbar-nav>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="/Awards/1" class="nav-menu">รางวัล</router-link>
+            <router-link to="/Awards/all/now/1" class="nav-menu">รางวัล</router-link>
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav>
@@ -121,13 +121,13 @@ export default {
       this.$router.push("/listroom/1");
     },
     productall() {
-      this.$router.push("/productall/1");
+      this.$router.push("/productall/all/1");
     },
     my_cart() {
       this.$router.push("/my_cart");
     },
     academic_articles() {
-      this.$router.push("/academic_articles/1");
+      this.$router.push("/academic_articles/all/1");
     },
     online_journals() {
       this.$router.push("/online_journals/1");
@@ -136,7 +136,7 @@ export default {
       this.$router.push("/research_list/1");
     },
     awards() {
-      this.$router.push("/Awards/1");
+      this.$router.push("/Awards/all/now/1");
     }
   }
 };

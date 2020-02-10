@@ -131,15 +131,14 @@
             >{{ mt.mt_name }}</option>
           </select>
           <br />
-          <div v-if="thisFiles != null" v-for="(file,run) in thisFiles">
-            <a :href="loadFile(file.f_name)" download>Dowload File</a>
-            {{file.f_title}}
+          <div v-if="research_data_file != null" v-for="(file,run) in research_data_file">
             <button
               type="button"
               class="btn btn-danger col-lg-1"
-              @click="RemoveFile(file.f_id)"
+              @click="RemoveFile(file.f_id,file.f_title)"
             >ลบ</button>
-
+            <a :href="loadFile(file.f_name)" download>Dowload File</a>
+            {{file.f_title}}
             <br />
             <br />
           </div>
@@ -200,13 +199,23 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       researchE: "",
       file_title: [],
       files: [],
-      max_size_file: 0
+      max_size_file: 0,
+
+      mem_type_all:'',
+      data_load:false,
+
+      research_data:'',
+      research_data_file:'',
+      data_load_r:false,
+
+      check_delete_file:false
     };
   },
   methods: {
@@ -240,11 +249,31 @@ export default {
       this.file_title.splice(index, 1);
     },
     // delete file
-    RemoveFile: function(fileID) {
+    RemoveFile: function(fileID,fileName) {
+      
       var FD_delete = new FormData();
       FD_delete.append("fileID", fileID);
       FD_delete.append("creator", JSON.stringify(this.$store.state.log_on));
-      this.$store.dispatch("Delete_File", FD_delete);
+      
+      this.$swal({
+          title: "Are you sure?",
+          text: "You want delete this Filse Name "+fileName,
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+          this.$store.dispatch("Delete_File", FD_delete);
+          setTimeout(() => {
+            this.check_delete_file=true
+            this.data_load_r=false
+          },100);
+          swal({title: "Delete Success.",icon: "success",});
+        } else {
+          //
+        }
+      })
     },
     // submit
     submitResearch() {
@@ -271,29 +300,33 @@ export default {
       return this.$store.getters.getPath_Files;
     },
     thisResearch() {
-      var researchAll = this.$store.getters.getResearch;
-      var research;
-      for (var i = 0; i < researchAll.length; i++) {
-        if (researchAll[i].r_id == this.$route.params.ResearchID) {
-          research = researchAll[i];
+      var researchID = this.$route.params.ResearchID;
+      var permission = this.the_user.m_type; //permission
+      if(this.the_user == '' || this.the_user == undefined || this.the_user == null){
+        permission = 0;
+      }
+      if(this.the_user.m_status == 'admin'){
+        permission = 9;
+      }
+      if(this.data_load_r == false){
+        axios.get(this.$store.getters.getBase_Url+'Research/get_this_research/'+permission+'/'+researchID)
+        .then(response => {
+          // console.log(response.data),
+          this.research_data = response.data[0][0],
+          this.research_data_file = response.data[1]
+        })
+        this.data_load_r = true
+        if(this.research_data.length == 0){
+          setTimeout(() => {
+            this.text_alert = 'This Page No Data.'
+          },1000);
         }
       }
-      this.researchE = research;
-      return research;
-    },
-    thisFiles() {
-      var filesAll = this.$store.getters.getFiles;
-      var files_research = [];
-      for (var i = 0; i < filesAll.length; i++) {
-        if (filesAll[i].f_key == this.thisResearch.r_file_key) {
-          files_research.push(filesAll[i]);
-        }
+      if(this.check_delete_file == false){
+        this.researchE = this.research_data
       }
-      if (files_research.length != 0) {
-        return files_research;
-      } else {
-        return false;
-      }
+      var research_show = this.research_data
+      return research_show; 
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
@@ -303,7 +336,16 @@ export default {
       return user;
     },
     Member_Type() {
-      return this.$store.getters.getMember_Type;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'User/get_all_member_type')
+        .then(response => {
+            // console.log(response.data) 
+            this.mem_type_all = response.data
+        })
+        this.data_load = true
+      }
+      var member_type_all = this.mem_type_all
+      return member_type_all
     }
   }
 };

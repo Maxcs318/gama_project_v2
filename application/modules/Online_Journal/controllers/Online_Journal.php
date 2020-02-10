@@ -23,6 +23,35 @@
         {
             echo $this->online_journal_model->get_all_online_journal();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get online_journal
+        public function get_online_journal($number_of_rows,$permission,$pagenow)
+        {
+            echo $this->online_journal_model->get_online_journal($number_of_rows,$permission,$pagenow);
+        }
+        // get this online_journal
+        public function get_this_online_journal($permission,$id)
+        {
+            $online_journal = json_decode($this->online_journal_model->get_this_online_journal($permission,$id));
+            if(sizeof($online_journal)==0){
+                $files_upload = false;
+            }else{
+                $key = $online_journal[0]->oj_file_key;
+                $files_upload = json_decode($this->Files_Upload_model->get_file_by_key($key));
+            }
+            $online_journal_and_files = json_encode([$online_journal,$files_upload]);
+            echo $online_journal_and_files;
+        }
+        // get all online_journal like
+        public function get_all_online_journal_like($permission,$title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->online_journal_model->get_all_online_journal_like($permission,$title_search);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
         
         // insert Online_Journal
         public function insert_online_journal()

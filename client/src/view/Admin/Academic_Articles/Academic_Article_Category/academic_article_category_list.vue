@@ -33,7 +33,17 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+    data(){
+        return {
+            data_academic_article_category:'',
+            data_load:false,
+
+            data_check_academic_article_category:0,
+            check_academic_article_category:null
+        }
+    },
     methods:{
         add_academicarticle_category(){
             this.$router.push('/addacademicarticle_category')
@@ -43,24 +53,42 @@ export default {
         },
         deleteAcademicArticle_Category(this_academicarticle){
             // console.log(this_academicarticle)
-            var FD  = new FormData()
-            FD.append('academic_article_categoryID',JSON.stringify(this_academicarticle))
-            FD.append('creator',JSON.stringify(this.$store.state.log_on))
-            this.$swal({
-                title: "Are you sure?",
-                text: "You want delete this Academic Article Category ID "+this_academicarticle,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+            axios.get(this.$store.getters.getBase_Url+'Academic_article/check_academic_article_and_article_academic_category/'+this_academicarticle)
+            .then(response => {
+                // console.log(response.data)
+                this.data_check_academic_article_category = response.data,   
+                this.check_academic_article_category = 'success'
             })
-            .then((willDelete) => {
-                if (willDelete) {
-                    this.$store.dispatch("Delete_Academic_Article_Category",FD)
-                    swal({title: "Delete Success.",icon: "success",});
-                } else {
-                    // swal("Your imaginary file is safe!");
+            setTimeout(() => {
+                if(this.data_check_academic_article_category == 0 && this.check_academic_article_category == 'success'){
+                    // -----
+                    var FD  = new FormData()
+                    FD.append('academic_article_categoryID',JSON.stringify(this_academicarticle))
+                    FD.append('creator',JSON.stringify(this.$store.state.log_on))
+                    this.$swal({
+                        title: "Are you sure?",
+                        text: "You want delete this Academic Article Category ID "+this_academicarticle,
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            this.$store.dispatch("Delete_Academic_Article_Category",FD)
+                            swal({title: "Delete Success.",icon: "success",});
+                            setTimeout(() => {
+                                this.data_load=false
+                            },100);
+                        } else {
+                            // swal("Your imaginary file is safe!");
+                        }
+                    })
+                }else{
+                    swal({title: "ประเภทบทความวิชาการนี้ ไม่สามารถลบได้",text: "เนื่องจากมี บทความวิชาการ บางรายการใช้ประเภทบทความวิชาการนี้อยู่",icon: "warning",});
                 }
-            })
+            },100);
+            this.data_check_academic_article_category = 0   
+            this.check_academic_article_category = null
         }
     },
     computed:{
@@ -72,11 +100,17 @@ export default {
             return user
         },
         academic_article_category(){
-            return this.$store.getters.getAcademic_Article_Category
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+"Academic_article/get_all_academic_article_category")
+                .then(response => {
+                    // console.log(response)
+                    this.data_academic_article_category = response.data
+                })
+                this.data_load=true
+            }
+            var category_all = this.data_academic_article_category
+            return category_all
         }
-    },
-    created(){
-        this.$store.dispatch("initDataAcademic_Article_Category");
     }
 }
 </script>

@@ -1,18 +1,18 @@
 <template>
   <div>
-    <div class="news">
+    <div class="news" v-if="the_news">
       <div class="container">
         <!-- pc page -->
         <div class="news-pc">
-          <div class="col-lg-12 col-12" v-for="news in the_news.slice().reverse().slice(0,1)">
-            <div class="row">
+          <div class="col-lg-12 col-12" v-for="(news,index) in the_news.slice(0,1)">
+            <div class="row" >
               <div class="col-lg-2 col-12">
                 <hr />
               </div>
               <div class="col-lg-4">
                 <h5 class="head">{{news.n_title}}</h5>
                 <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
-                <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,15)}}</p>
+                <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
               </div>
               <div class="col-lg-6">
                 <div class="news1"></div>
@@ -29,7 +29,7 @@
         </div>
         <!-- mb page -->
         <div class="news-mb">
-          <div class="col-lg-12 col-12" v-for="news in the_news.slice().reverse().slice(0,1)">
+          <div class="col-lg-12 col-12" v-for="(news,index2) in the_news.slice(0,1)">
             <div class="row">
               <div class="col-xs-12">
                 <div class="news1"></div>
@@ -45,7 +45,7 @@
                 <h5 class="head" @click="seethisPageNews(news.n_id)">{{news.n_title}}</h5>
                 <hr style="width:100%" />
                 <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
-                <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,15)}}</p>
+                <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@
           <div
             class="col-lg-6 col-md-6 col-12"
             @click="seethisPageNews(news.n_id)"
-            v-for="news in the_news.slice().reverse().slice(1,3)"
+            v-for="(news,index3) in the_news.slice(1,3)" 
           >
             <div class="news-2">
               <img :src="getImgUrl(news.n_image)" width="100%" height="360px" />
@@ -64,7 +64,7 @@
                 class="news-text"
                 @click="seethisPageNews(news.n_id)"
               >{{news.n_title.slice(0,50)+"..."}}</h5>
-              <p class="news-date" style="text-align: left;">{{news.n_create_date.slice(0,15)}}</p>
+              <p class="news-date" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
             </div>
           </div>
         </div>
@@ -73,7 +73,16 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data(){
+    return{
+      data_news:'',
+      data_size:'',
+      data_load:false,
+      data_in_page: 3,
+    }
+  },
   methods: {
     getImgUrl(pic) {
       return this.path_files + "News/" + pic;
@@ -87,14 +96,21 @@ export default {
   },
   computed: {
     the_news() {
-      return this.$store.getters.getNews;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'News/get_news/'+this.data_in_page+'/1')
+        .then(response => {
+            // console.log(response.data),
+            this.data_size = response.data[0],
+            this.data_news = response.data[1]
+        })
+        this.data_load = true
+      }
+      var news_show = this.data_news
+      return news_show
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataNews");
   }
 };
 </script>

@@ -17,12 +17,14 @@
             return json_encode($newsAll);  
             
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get News
-        public function get_news($pagenow)
+        public function get_news($number_of_rows,$pagenow)
         {
             // limit(1,2)  1 แรกคือจำนวน row ที่ต้องการ 2 หลัง คือ เริ่มจาก index ที่เท่าไหร่     
             $this->db->order_by('n_id', 'DESC');
-            $number_of_rows = 6;
             $index_start = ($pagenow-1)*$number_of_rows;
             $news_result = $this->db->limit($number_of_rows,$index_start)->get($this->news)->result(); 
             $news_row_all = $this->db->from($this->news)->count_all_results();
@@ -35,6 +37,25 @@
             $result = $this->db->where('n_id',$id)->get($this->news)->result();
             return json_encode($result);  
         }
+        // get all new like ...
+        public function get_all_news_like($title_search)
+        {   
+            $this->db->order_by('n_id', 'DESC');
+            $news_result = $this->db->like('n_title',$title_search,'both')->get($this->news)->result();
+            $news_row_all = sizeof($news_result);
+            $result = [$news_row_all,$news_result];
+            return json_encode($result);  
+        }
+        // get random news
+        public function get_random_news($pcs)
+        {
+            $this->db->order_by('rand()');
+            $this->db->limit($pcs);
+            $news_result = $this->db->get($this->news)->result();
+            return json_encode($news_result);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+        
         // get file key news
         public function get_file_key_news($where = array())
         {

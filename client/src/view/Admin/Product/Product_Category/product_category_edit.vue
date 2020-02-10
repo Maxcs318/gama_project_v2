@@ -11,11 +11,11 @@
         </div>
         <div class="row">
           <div class="col-lg-3 col-xs-12"></div>
-          <div class="col-lg-6 col-xs-12">
+          <div class="col-lg-6 col-xs-12" v-if="productC">
             <form @submit.prevent="submitProduct_Category">
               <center>
-                <img class="admin-img" v-if="url" :src="url" />
-                <img class="admin-img" v-else :src="getImgUrl(productC.pc_image)" />
+                <img class=" " v-if="url" :src="url" width="100%"/>
+                <img class=" " v-else :src="getImgUrl(productC.pc_image)" width="100%"/>
               </center>
               <br />
               <center>
@@ -67,13 +67,12 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      productC: {
-        pc_title: "",
-        pc_description: ""
-      },
+      data_load:false,
+      productC:'',
       url: null,
       fileimage: ""
     };
@@ -124,21 +123,24 @@ export default {
       }
       return user;
     },
-    Product_Category() {
-      var PC_All = this.$store.getters.getProduct_Category;
-      var PC;
+    Product_Category() {      
       if (
         this.$route.params.Product_CategoryID == 1 ||
         this.$route.params.Product_CategoryID == 2
       ) {
         this.$router.go(-1);
       }
-      for (var i = 0; i < PC_All.length; i++) {
-        if (PC_All[i].pc_id == this.$route.params.Product_CategoryID) {
-          PC = PC_All[i];
-        }
+      var product_c_ID = this.$route.params.Product_CategoryID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_this_product_category/'+product_c_ID)
+        .then(response => {
+            // console.log(response.data)
+            this.productC = response.data
+        })
+        this.data_load = true
       }
-      this.productC = PC;
+      
+      var PC = this.productC;
       return PC;
     }
   }

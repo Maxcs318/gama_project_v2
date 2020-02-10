@@ -13,13 +13,13 @@
         <div class="row justify-content-around">
           <div
             class="col-lg-3 col-md-6 col-6"
-            v-for="(product,index) in book.slice().reverse().slice(0,4)"
+            v-for="(product,index) in book"
             :key="index"
           >
-            <img
-              class="mx-auto d-block book-img"
+            <img 
+              class=""
               :src="getImgUrlProduct(product.p_image)"
-              @click="seethisPageBook(product.p_id)"
+              @click="seethisPageBook(product.p_id)" width="100%"
             />
             <h5 class="book-detail">{{product.p_name.slice(0,50)+"..."}}</h5>
             <p class="price" style="text-align: center;">฿ {{product.p_price}}</p>
@@ -30,7 +30,17 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data() {
+    return {
+      data_product:'',
+      data_size:'',
+      data_load:false,
+      data_in_page: 4,
+      
+    };
+  },
   methods: {
     getImgUrlProduct(picP) {
       return this.path_files + "Product/" + picP;
@@ -44,21 +54,21 @@ export default {
   },
   computed: {
     book() {
-      var productAll = this.$store.getters.getProduct;
-      var book = [];
-      for (var i = 0; i < productAll.length; i++) {
-        if (productAll[i].p_category == 1) {
-          book.push(productAll[i]);
-        }
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/1/1')
+        .then(response => {
+        // console.log(response.data),
+        this.data_size = response.data[0],
+        this.data_product = response.data[1]
+        })
+        this.data_load = true
       }
-      return book;
+      var book_show = this.data_product
+      return book_show;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataProduct");
   }
 };
 </script>

@@ -57,10 +57,21 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      award_list: null
+      award_list: null,
+      data_load:false,
+
+      data_award_year:'',
+      data_load_award_year:false,
+
+      data_award_type:'',
+      data_load_award_type:false,
+
+      data_company:'',
+      data_load_company:false
     };
   },
   methods: {
@@ -85,24 +96,53 @@ export default {
       return user;
     },
     thisAward_list() {
-      var award_list_all = this.$store.getters.getAward_List;
-      var this_award;
-      for (var i = 0; i < award_list_all.length; i++) {
-        if (award_list_all[i].al_id == this.$route.params.Award_listID) {
-          this_award = award_list_all[i];
-        }
+      var award_list_id = this.$route.params.Award_listID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Award/get_this_award/'+award_list_id)
+        .then(response => {
+          // console.log(response.data[0])
+          this.award_list = response.data[0]
+        })
+        this.data_load = true
       }
-      this.award_list = this_award;
-      return this_award;
+      var this_award_list = this.award_list
+      return this_award_list
     },
     Award_type() {
-      return this.$store.getters.getAward_Type;
+      if(this.data_load_award_type==false){
+        axios.get(this.$store.getters.getBase_Url+"Award/get_all_award_type")
+        .then(response => {
+          // console.log(response)
+          this.data_award_type = response.data
+        })
+      this.data_load_award_type = true
+      }
+      var award_type_all = this.data_award_type
+      return award_type_all
     },
     Award_year() {
-      return this.$store.getters.getAward_Years;
+      if(this.data_load_award_year==false){
+        axios.get(this.$store.getters.getBase_Url+"Award/get_all_award_years")
+        .then(response => {
+          // console.log(response)
+          this.data_award_year = response.data
+        })
+      this.data_load_award_year = true
+      }
+      var award_year_all = this.data_award_year
+      return award_year_all
     },
     Company() {
-      return this.$store.getters.getCompany;
+      if(this.data_load_company==false){
+        axios.get(this.$store.getters.getBase_Url+"Award/get_all_company")
+        .then(response => {
+          // console.log(response)
+          this.data_company = response.data
+        })
+      this.data_load_company = true
+      }
+      var company_all = this.data_company
+      return company_all
     }
   }
 };

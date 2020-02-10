@@ -108,6 +108,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -120,7 +121,9 @@ export default {
       },
       files: [],
       max_size_file: 0,
-      file_title: []
+      file_title: [],
+      mem_type_all:'',
+      data_load:false
     };
   },
   methods: {
@@ -172,12 +175,21 @@ export default {
   },
   computed: {
     Member_Type() {
-      return this.$store.getters.getMember_Type;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'User/get_all_member_type')
+        .then(response => {
+            // console.log(response.data) 
+            this.mem_type_all = response.data
+        })
+        this.data_load = true
+      }
+      var member_type_all = this.mem_type_all
+      return member_type_all
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     }

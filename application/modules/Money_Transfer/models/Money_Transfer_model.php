@@ -27,6 +27,18 @@
             return json_encode($lastID);
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        
+        // money_transfer_in_order
+        public function money_transfer_in_order($mtf_id)
+        {
+            $result = $this->db->where('mtf_id',$mtf_id)->get($this->money_transfer)->result(); 
+            return json_encode($result[0]); 
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 

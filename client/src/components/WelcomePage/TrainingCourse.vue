@@ -5,7 +5,7 @@
         <div class="row">
           <header class="col-lg-10 col-xs-12 header">หลักสูตรอบรม</header>
           <div class="col-lg-2 col-xs-12">
-            <router-link to="/training_courses">
+            <router-link to="/training_courses/1">
               <button class="btn-viewall">ดูทั้งหมด></button>
             </router-link>
           </div>
@@ -13,7 +13,7 @@
         <div class="row">
           <div
             class="col-lg-6 col-md-6"
-            v-for="(product,index) in trainingCourse.slice().reverse().slice(0,4)"
+            v-for="(product,index) in trainingCourse"
             :key="index"
           >
             <div class="training-img">
@@ -38,7 +38,17 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data() {
+    return {
+      data_product:'',
+      data_size:'',
+      data_load:false,
+      data_in_page: 4,
+      
+    };
+  },
   methods: {
     getImgUrlProduct(picP) {
       return this.path_files + "Product/" + picP;
@@ -52,21 +62,21 @@ export default {
   },
   computed: {
     trainingCourse() {
-      var productAll = this.$store.getters.getProduct;
-      var training_course = [];
-      for (var i = 0; i < productAll.length; i++) {
-        if (productAll[i].p_category == 2) {
-          training_course.push(productAll[i]);
-        }
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/1/1')
+        .then(response => {
+        // console.log(response.data),
+        this.data_size = response.data[0],
+        this.data_product = response.data[1]
+        })
+        this.data_load = true
       }
+      var training_course = this.data_product
       return training_course;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataProduct");
   }
 };
 </script>

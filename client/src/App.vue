@@ -11,11 +11,16 @@
       <sidebar v-if="this.$store.state.the_user.m_status == 'admin'"></sidebar>
 
       <div style="padding-top: 120px;">
-        <transition name="page" mode="out-in">
-          <div>
-            <router-view></router-view>
-          </div>
-        </transition>
+        
+        <!-- <div> -->
+          <!-- slide-fade -->
+          <!-- page -->
+          <!-- mode="out-in" -->
+          <transition name="slide-fade" >
+            <router-view ></router-view>
+          </transition>
+        <!-- </div> -->
+        
       </div>
       <foot></foot>
     </div>
@@ -39,8 +44,11 @@ export default {
       },
       adminBG: {
         backgroundColor: "#01152E"
-      }
+      },
     };
+  },
+  mounted(){
+
   },
   computed: {
     read_background() {
@@ -53,6 +61,15 @@ export default {
       return true;
     }
   },
+  watch:{
+    $route (to, from){
+      if(this.$route.path=='/'){
+        setTimeout(() => {
+          window.scrollTo(0,0);    
+        }, 10)
+      }
+    },
+  },
   components: {
     navbar: Nav,
     navbarmember: Nav_Member,
@@ -63,39 +80,11 @@ export default {
   },
   created() {
     this.$store.dispatch("initApp");
-    this.$store.dispatch("initMembers");
-    this.$store.dispatch("initDataMember_Type");
-    this.$store.dispatch("initDataNews");
-    this.$store.dispatch("initDataArticle");
-    this.$store.dispatch("initDataArticle_Category");
-    this.$store.dispatch("initDataFiles");
-    this.$store.dispatch("initDataProduct");
-    this.$store.dispatch("initDataProduct_Category");
-    this.$store.dispatch("initDataProduct_Image");
-    this.$store.dispatch("initDataVideos");
-    this.$store.dispatch("initDataVideo_Room");
-    this.$store.dispatch("initDataOrders");
-    this.$store.dispatch("initDataOrder_Items");
-    this.$store.dispatch("initDataOrder_Status");
-    this.$store.dispatch("initDataShipping_Address");
-    this.$store.dispatch("initDataPayment");
-    this.$store.dispatch("initDataBanking");
-    this.$store.dispatch("initDataMoney_Transfer");
-    this.$store.dispatch("initDataGallery");
-    this.$store.dispatch("initDataGallery_Image");
-    this.$store.dispatch("initDataAcademic_Article");
-    this.$store.dispatch("initDataAcademic_Article_Category");
-    this.$store.dispatch("initDataOnline_Journal");
-    this.$store.dispatch("initDataMember_Upgrade_Date");
-    this.$store.dispatch("initDataResearch");
-    this.$store.dispatch("initDataAward_List");
-    this.$store.dispatch("initDataAward_Type");
-    this.$store.dispatch("initDataAward_years");
-    this.$store.dispatch("initDataCompany");
   }
 };
 </script>
 <style>
+/* page */
 .page-enter,
 .page-leave-active {
   opacity: 0;
@@ -103,6 +92,19 @@ export default {
 .page-enter-active,
 .page-leave-active {
   transition: all 0.5s;
+}
+
+/*  slide-fade */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .6s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 
 .header {

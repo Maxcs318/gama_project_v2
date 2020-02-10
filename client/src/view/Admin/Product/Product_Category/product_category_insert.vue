@@ -12,7 +12,7 @@
                     <div class="col-lg-6 col-xs-12">
                         <form @submit.prevent="submitProduct_Category">
                             <center>                            
-                                <img v-if="url"  :src="url" class="admin-img" />
+                                <img v-if="url"  :src="url" class=" " width="100%"/>
                             </center>
                             <br>
                             <button type="button" class="block-center form-control btn-success col-lg-6" @click="ChooseFilesFirst">เลือกรูป</button>

@@ -15,94 +15,78 @@
         วันที่สร้าง : {{thisGallery.g_create_date}}
         <br />
         แก้ไขล่าสุด : {{thisGallery.g_update_date}}
-        <br />
+        <br /><br>
         <div class="row">
-          <div class="col-lg-3 col-lg-xs-12" v-for="(gi,index) in thisGallery_image" :key="index">
+          <div class="col-lg-3 col-lg-xs-12" >
+            <img class="event-img" :src="getImgUrlGallery(thisGallery.g_image)" />
+            <br />
+            <br />
+          </div>
+          <div class="col-lg-3 col-lg-xs-12" v-for="(gi,index) in gallery_data_file" :key="index">
             <img class="event-img" :src="getImgUrlGallery(gi.gi_image)" />
             <br />
             <br />
           </div>
         </div>
-        <!-- <div class="row">
-                    <div class="col-12">
-                        <b-carousel id="carousel1"
-                            style="text-shadow: 1px 1px 2px #333;"
-                            controls
-                            indicators
-                            :interval="1500"
-                            img-width="100%"
-                            v-model="slide"
-                            @sliding-start="onSlideStart"
-                            @sliding-end="onSlideEnd"
-                        >
-                            <b-carousel-slide caption="Blank Image" img-blank v-for=" (gallery_slide,index) in thisGallery_image " :key="index">
-                                <img :src="getImgUrlGallery(gallery_slide.gi_image)" width="100%"/>
-                            </b-carousel-slide>
-                        </b-carousel>
-                    </div>
-        </div>-->
       </div>
     </div>
     <div class="row" v-else-if="!thisGallery">
       <div class="col-lg-12 col-xs-12">
         <center>
-          <h4>this Gallery No Have.</h4>
+          <h4> {{text_alert}} </h4>
         </center>
       </div>
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
-  data() {
+  data(){
     return {
-      slide: 0,
-      sliding: null
-    };
+      data_load:false,
+      text_alert:'',
+      gallery_data:'',
+      gallery_data_file:'',
+      
+      // slide: 0,
+      // sliding: null
+    }
   },
   methods: {
     getImgUrlGallery(pic) {
       return this.path_files + "Gallery/" + pic;
     },
-    onSlideStart(slide) {
-      this.sliding = true;
-    },
-    onSlideEnd(slide) {
-      this.sliding = false;
-    }
+    // onSlideStart(slide) {
+    //   this.sliding = true;
+    // },
+    // onSlideEnd(slide) {
+    //   this.sliding = false;
+    // }
   },
   computed: {
     path_files() {
       return this.$store.getters.getPath_Files;
     },
     thisGallery() {
-      var galleryall = this.$store.getters.getGallery;
-      var gallery;
-      for (var i = 0; i < galleryall.length; i++) {
-        if (galleryall[i].g_id == this.$route.params.GalleryID) {
-          gallery = galleryall[i];
+      var galleryID = this.$route.params.GalleryID;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Gallery/get_this_gallery/'+galleryID)
+        .then(response => {
+            // console.log(response.data),
+            this.gallery_data = response.data[0][0],
+            this.gallery_data_file = response.data[1]
+        })
+        this.data_load = true
+        if(this.gallery_data.length == 0){
+          setTimeout(() => {
+            this.text_alert = 'This Page No Data.'
+          },1000);
         }
       }
-      return gallery;
+      var gallery_show = this.gallery_data
+      return gallery_show;
     },
-    thisGallery_image() {
-      var gallery_imageall = this.$store.getters.getGallery_Image;
-      var gallery_image = [];
-      // set first image
-      var first_image = { gi_image: this.thisGallery.g_image };
-      gallery_image.push(first_image);
-      // ===============
-      for (var i = 0; i < gallery_imageall.length; i++) {
-        if (gallery_imageall[i].gi_gallery_id == this.$route.params.GalleryID) {
-          gallery_image.push(gallery_imageall[i]);
-        }
-      }
-      return gallery_image;
-    }
   },
-  created() {
-    this.$store.dispatch("initDataGallery");
-    this.$store.dispatch("initDataGallery_Image");
-  }
 };
 </script>

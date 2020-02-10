@@ -21,8 +21,8 @@
           <br />
           <center>
             <button type="submit">เข้าสู่ระบบ</button>
-            <br />
-            <a href="#" class="forgot-pass">ลืมรหัสผ่าน</a>
+            <!-- <br /> -->
+            <!-- <a href="#" class="forgot-pass">ลืมรหัสผ่าน</a> -->
           </center>
         </div>
       </form>

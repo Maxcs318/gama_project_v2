@@ -23,6 +23,51 @@
             $videosAll = $this->db->get($this->video_room)->result(); 
             return json_encode($videosAll);  
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get video_room
+        public function get_video_room($number_of_rows,$pagenow)
+        {
+            // limit(1,2)  1 แรกคือจำนวน row ที่ต้องการ 2 หลัง คือ เริ่มจาก index ที่เท่าไหร่     
+            $this->db->order_by('vr_id', 'DESC');
+            $index_start = ($pagenow-1)*$number_of_rows;
+            $video_room_result = $this->db->limit($number_of_rows,$index_start)->get($this->video_room)->result(); 
+            $video_room_row_all = $this->db->from($this->video_room)->count_all_results();
+            $result = [$video_room_row_all,$video_room_result];
+            return json_encode($result);      
+        }
+        // get this video_room
+        public function get_this_video_room($id)
+        {   
+            $result = $this->db->where('vr_id',$id)->get($this->video_room)->result();
+            return json_encode($result);  
+        }
+        // get all video in room  ----------------------------------------------
+        public function get_all_video_in_room($number_room)
+        {   
+            $result = $this->db->where('v_room',$number_room)->get($this->videos)->result();
+            return json_encode($result);  
+        }
+        // ----------------------------------------------------------------------
+        // get_this_video
+        public function get_this_video($id)
+        {
+            $result = $this->db->where('v_id',$id)->get($this->videos)->result();
+            return json_encode($result);  
+        }
+        // get all video_room like ...
+        public function get_all_video_room_like($title_search)
+        {   
+            $this->db->order_by('vr_id', 'DESC');
+            $video_room_result = $this->db->like('vr_title',$title_search,'both')->get($this->video_room)->result();
+            $video_room_row_all = sizeof($video_room_result);
+            $result = [$video_room_row_all,$video_room_result];
+            return json_encode($result);  
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+       
         // insert Room
         public function insert_room($data = array())
         {

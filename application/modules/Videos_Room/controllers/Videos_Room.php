@@ -27,6 +27,42 @@
         {
             echo $this->Videos_Room_model->get_all_video_room();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get video_room
+        public function get_video_room($number_of_rows,$pagenow)
+        {
+            echo $this->Videos_Room_model->get_video_room($number_of_rows,$pagenow);
+        }
+        // get this video_room
+        public function get_this_video_room($id)
+        {
+            $video_room = json_decode($this->Videos_Room_model->get_this_video_room($id));
+            if(sizeof($video_room)==0){
+                $files_upload = false;
+            }else{
+                $key = $video_room[0]->vr_id;
+                $files_upload = json_decode($this->Videos_Room_model->get_all_video_in_room($key));
+            }
+            $video_room_and_files = json_encode([$video_room,$files_upload]);
+            echo $video_room_and_files;
+        }
+        // get_this_video
+        public function get_this_video($id)
+        {
+            $video = $this->Videos_Room_model->get_this_video($id);
+            echo $video;
+        }
+        // get all video_room like
+        public function get_all_video_room_like($title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->Videos_Room_model->get_all_video_room_like($title_search);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // insert Room
         public function insert_room()
         {

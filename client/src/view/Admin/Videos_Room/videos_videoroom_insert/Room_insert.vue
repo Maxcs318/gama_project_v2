@@ -21,7 +21,7 @@
           <div class="row">
             <div class="col-lg-6 col-xs-6"></div>
             <div class="col-lg-6 col-xs-6">
-              <button class="form-control btn-primary" type="submit">ดำเนินการต่อ</button>
+              <button class="form-control btn-primary" type="submit">ดำเนินการต่อ</button> <br>
             </div>
           </div>
         </form>

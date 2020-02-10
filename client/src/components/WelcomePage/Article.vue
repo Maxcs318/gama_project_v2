@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div v-if="the_article">
     <div class="article">
       <div class="container">
         <div class="row">
           <header class="col-lg-10 col-xs-12 header">บทความ GAMA Thailand</header>
           <div class="col-lg-2">
-            <router-link to="/articles/1">
+            <router-link to="/articles/all/1">
               <button type="button" class="btn-viewall">ดูทั้งหมด></button>
             </router-link>
           </div>
@@ -14,14 +14,14 @@
           <div
             class="col-lg-4 col-md-6 article-img"
             style="padding:0;"
-            v-for="(article,index) in the_article.slice().reverse().slice(0,3)"
+            v-for="(article,index) in the_article"
             :key="index"
           >
             <div class="article-col">
               <img
                 :src="getImgUrlArticle(article.a_image)"
                 width="100%"
-                height="250px"
+               
                 @click="seethisPageArticle(article.a_id)"
               />
               <h5 class="text">{{article.a_title.slice(0,50)+"..."}}</h5>
@@ -36,7 +36,16 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data(){
+    return{
+      data_size:'',
+      data_articles:'',
+      data_in_page:3,
+      data_load:false
+    }
+  },
   methods: {
     getImgUrlArticle(picA) {
       return this.path_files + "Article/" + picA;
@@ -50,14 +59,21 @@ export default {
   },
   computed: {
     the_article() {
-      return this.$store.getters.getArticle;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Article/get_article/'+this.data_in_page+'/'+'all'+'/1')
+        .then(response => {
+            // console.log(response.data),
+            this.data_size = response.data[0],
+            this.data_articles = response.data[1]
+        })
+        this.data_load = true
+      }
+      var article_show = this.data_articles
+      return article_show
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataArticle");
   }
 };
 </script>

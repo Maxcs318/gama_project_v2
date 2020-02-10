@@ -14,7 +14,7 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitNews">
               <center>
-                <img v-if="url" :src="url" max-width="250px" height="250px" />
+                <img v-if="url" :src="url" width="100%" />
               </center>
               <br />
               <center>
@@ -33,6 +33,7 @@
               </center>
 
               <br />
+              หัวเรื่อง
               <input
                 type="text"
                 v-model="news.n_title"
@@ -41,6 +42,15 @@
                 required
               />
               <br />
+              วิดีโอที่เกี่ยวข้อง
+              <input
+                type="text"
+                v-model="news.n_video_link"
+                class="form-control"
+                placeholder="วิดีโอที่เกี่ยวข้อง #หากไม่มีไม่ต้องใส่"
+              />
+              <br />
+              รายละเอียด
               <textarea
                 v-model="news.n_detail"
                 class="form-control textarea"
@@ -110,7 +120,8 @@ export default {
         n_title: "",
         n_detail: "",
         n_image: "",
-        n_create_date: ""
+        n_create_date: "",
+        n_video_link:""
       },
       url: null,
       fileimage: "",
@@ -192,7 +203,7 @@ export default {
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     }

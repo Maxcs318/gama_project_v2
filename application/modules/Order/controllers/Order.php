@@ -9,6 +9,10 @@
             $this->load->model("order_model");
             $this->load->model('../../Check_/models/Check__model');
             $this->load->model('../../Shipping_Address/models/Shipping_Address_model');
+            $this->load->model('../../Money_Transfer/models/Money_Transfer_model'); 
+            $this->load->model('../../Payment/models/Payment_model');
+            $this->load->model('../../Banking/models/Banking_model');
+
             $this->output->set_content_type("application/json", 'utf-8');
             // $this->output->set_header("Access-Control-Allow-Origin: *");
             $this->output->set_header("Access-Control-Allow-Methods: GET, POST , OPTIONS");
@@ -23,6 +27,62 @@
         {
             echo $this->order_model->get_all_order();
         }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get my order
+        public function get_my_order()
+        {
+            $number_of_rows = json_decode($this->input->post('number_of_row'));
+            $myID = json_decode($this->input->post('myID'));
+            $order_status_id = json_decode($this->input->post('order_status_id'));
+            $pagenow = json_decode($this->input->post('pagenow'));
+
+            echo $this->order_model->get_my_order($number_of_rows,$myID,$order_status_id,$pagenow);
+        }
+        // get_order_by_code
+        public function get_order_by_code()
+        {
+            $order_code = json_decode($this->input->post('order_code'));
+
+            $order = json_decode($this->order_model->get_order_by_code($order_code));
+            $order_items = json_decode($this->order_model->get_order_items_in_order($order->o_id));
+            $order_status = json_decode($this->order_model->get_order_status_in_order($order->o_status_id));
+            // shipping_address
+            $shipping_address = json_decode($this->Shipping_Address_model->shipping_address_in_order($order->o_shipping_address_id));
+
+            if($order->o_status_id > 1){
+                 // money_transfer
+                $money_transfer = json_decode($this->Money_Transfer_model->money_transfer_in_order($order->o_money_transfer_id));
+                // payments
+                $payment = json_decode($this->Payment_model->payment_in_money_transfer($money_transfer->mtf_payments_id));
+                // banking
+                if($money_transfer->mtf_payments_id == 1){
+                    $banking = json_decode($this->Banking_model->banking_in_money_transfer($money_transfer->mtf_payments_id));
+                }else{
+                    $banking = false;
+                }
+            }else{
+                $money_transfer = false;
+                $payment = false;
+                $banking = false;
+            }
+            
+            $result = [$order,$order_items,$order_status,$shipping_address,$money_transfer,$payment,$banking];
+            echo json_encode($result);
+            
+        }
+        // get_order_for_admin
+        public function get_order_for_admin()
+        {
+            $number_of_rows = json_decode($this->input->post('number_of_row'));
+            $order_status_id = json_decode($this->input->post('order_status_id'));
+            $pagenow = json_decode($this->input->post('pagenow'));
+
+            echo $this->order_model->get_order_for_admin($number_of_rows,$order_status_id,$pagenow);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // all order_status
         public function get_all_order_status()
         {

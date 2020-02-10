@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <div class="container" style="margin-top: 109px">
+    <div class="container" style="margin-top: 25px">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
           <h5 class="head">หนังสือเล่มอื่นที่หน้าสนใจ</h5>
@@ -10,24 +9,33 @@
       <div class="row">
         <div
           class="col-lg-3 col-6"
-          v-for="(product,index) in book.slice().reverse().slice(0,4)"
+          v-for="(product,index) in book"
           :key="index"
         >
           <img
-            class="book-img"
+            class=""
             :src="getImgUrlProduct(product.p_image)"
             @click="seethisPage(product.p_id)"
+            width="100%"
           />
-          <h5 class="book-name">{{product.p_name}}</h5>
-          <p class="book-price">{{product.p_price}} ฿</p>
+          <h5 class="book-name" @click="seethisPage(product.p_id)">{{product.p_name}}</h5>
+          <p class="book-price" @click="seethisPage(product.p_id)">{{product.p_price}} ฿</p>
           <br />
         </div>
       </div>
     </div>
-  </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data(){
+    return{
+      data_pcs:4,
+      product_category:1,
+      data_product:'',
+      data_load:false
+    }
+  },
   methods: {
     getImgUrlProduct(pic) {
       return this.path_files + "Product/" + pic;
@@ -39,23 +47,27 @@ export default {
       });
     }
   },
+  watch:{
+    $route (to, from){
+      this.data_load = false;
+    },
+  },
   computed: {
     book() {
-      var productAll = this.$store.getters.getProduct;
-      var book = [];
-      for (var i = 0; i < productAll.length; i++) {
-        if (productAll[i].p_category == 1) {
-          book.push(productAll[i]);
-        }
+      if(this.data_load == false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_random_product/'+this.product_category+'/'+this.data_pcs)
+        .then(response => {
+          this.data_product = response.data
+        })
+          this.data_load = true
       }
+      
+        var book = this.data_product
       return book;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataProduct");
   }
 };
 </script>

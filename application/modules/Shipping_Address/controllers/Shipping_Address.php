@@ -23,6 +23,15 @@
             echo $this->Shipping_Address_model->get_all_shipping_address();
         }
 
+        //////////////////////////////////////////////////////////////////////////////////
+        
+        // get my shipping address
+        public function get_my_shipping_address($id)
+        {
+            echo $this->Shipping_Address_model->get_my_shipping_address($id);
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////
         
 
         

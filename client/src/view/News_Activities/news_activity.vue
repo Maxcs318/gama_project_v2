@@ -4,23 +4,26 @@
       <div class="col-lg-1 col-12"></div>
       <div class="col-lg-10 col-12" v-if="thisNews">
         <img :src="getImgUrl(thisNews.n_image)" width="100%" />
-        <!-- <a :href="getImgUrl(thisNews.n_image)" download>File Dowload</a> -->
+        <div v-if="thisNews.n_video_link.slice(0,23) == 'https://www.youtube.com'">
+          <br>
+          <b-embed type="iframe" aspect="16by9" :src="thisNews.n_video_link" allowfullscreen ></b-embed>
+        </div>
         <h5 class="activity-title mt-4">{{thisNews.n_title}}</h5>
-        <p class="activity-date" style="text-align:left">{{thisNews.n_create_date.slice(0,-13)}}</p>
-        <br />
+        <p class="activity-date" style="text-align:right">{{thisNews.n_create_date}}</p>
+        <!-- .slice(0,-13) -->
         <p class="activity-detail" style="text-align:left">{{thisNews.n_detail}}</p>
-        <div v-if="thisFiles != null" v-for="(file,index) in thisFiles" :key="index">
+        <div v-if="news_data_file != null" v-for="(file,index) in news_data_file" :key="index">
           <a :href="loadFile(file.f_name)" class="btn" download><i class="fa fa-download"></i>&nbsp; Download File :</a>
           {{file.f_title}}
           <br />
         </div>
       </div>
-      <div class="col-lg-10 col-12" v-else>This Page No Data.</div>
+      <div class="col-lg-10 col-12" v-else><center> <h2> {{text_alert}} </h2> </center> <br><br> </div>
       <div class="col-lg-1 col-12"></div>
     </div>
-
-    <div class="activity2">
-      <div class="row">
+     <div class="activity2">
+       <news-interesting></news-interesting>
+      <!--<div class="row">
         <div class="col-lg-6 col-12" v-for="news in News_all.slice().reverse().slice(1,3)">
           <div>
             <img
@@ -37,12 +40,26 @@
             >{{news.n_create_date.slice(0,-13)}}</p>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
+import newsinteresting from "./../../components/Other_interesting/news_interesting";
+
 export default {
+  data(){
+    return {
+      data_load:false,
+      text_alert:'',
+      news_data:'',
+      news_data_file:''
+    }
+  },
+  components: {
+    NewsInteresting: newsinteresting,
+  },
   methods: {
     getImgUrl(pic) {
       return this.path_files + "News/" + pic;
@@ -57,36 +74,33 @@ export default {
       });
     }
   },
+  watch:{
+    $route (to, from){
+        this.data_load = false;
+    }
+  },
   computed: {
     path_files() {
       return this.$store.getters.getPath_Files;
     },
-    News_all() {
-      return this.$store.getters.getNews;
-    },
     thisNews() {
-      var newsAll = this.$store.getters.getNews;
-      var news;
-      for (var i = 0; i < newsAll.length; i++) {
-        if (newsAll[i].n_id == this.$route.params.NewsID) {
-          news = newsAll[i];
+      var newsID = this.$route.params.NewsID;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'News/get_this_news/'+newsID)
+        .then(response => {
+            // console.log(response.data),
+            this.news_data = response.data[0][0],
+            this.news_data_file = response.data[1]
+        })
+        this.data_load = true
+        if(this.news_data.length == 0){
+          setTimeout(() => {
+            this.text_alert = 'This Page No Data.'
+          },1000);
         }
       }
-      return news;
-    },
-    thisFiles() {
-      var filesAll = this.$store.getters.getFiles;
-      var files_news = [];
-      for (var i = 0; i < filesAll.length; i++) {
-        if (filesAll[i].f_key == this.thisNews.n_file_key) {
-          files_news.push(filesAll[i]);
-        }
-      }
-      if (files_news.length != 0) {
-        return files_news;
-      } else {
-        return false;
-      }
+      var news_show = this.news_data
+      return news_show;
     }
   }
 };

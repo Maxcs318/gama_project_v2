@@ -22,6 +22,10 @@
         {
             echo $this->Files_Upload_model->get_all_files_upload();
         }
+        // get file By key
+        // public function get_file_by_key($key){
+        //     echo $this->Files_Upload_model->get_file_by_key($key);
+        // }
         // delete file
         public function delete_files_upload()
         {

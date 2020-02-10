@@ -22,6 +22,36 @@
         {
             echo $this->gallery_model->get_all_gallery();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get gallery
+        public function get_gallery($number_of_rows,$pagenow)
+        {
+            echo $this->gallery_model->get_gallery($number_of_rows,$pagenow);
+        }
+        // get this gallery
+        public function get_this_gallery($id)
+        {
+            $gallery = json_decode($this->gallery_model->get_this_gallery($id));
+            if(sizeof($gallery)==0){
+                $image_in_gallery = false;
+            }else{
+                $key = $gallery[0]->g_id;
+                $image_in_gallery = json_decode($this->gallery_model->get_image_by_gallery_id($key));
+            }
+            $gallery_and_files = json_encode([$gallery,$image_in_gallery]);
+            echo $gallery_and_files;
+        }
+        // get all gallery like
+        public function get_all_gallery_like($title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->gallery_model->get_all_gallery_like($title_search);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get all Gallery image
         public function get_all_gallery_image()
         {

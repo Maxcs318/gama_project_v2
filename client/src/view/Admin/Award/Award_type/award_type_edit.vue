@@ -33,10 +33,12 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      award_type: []
+      data_load:false,
+      award_type: ''
     };
   },
   methods: {
@@ -61,15 +63,17 @@ export default {
       return user;
     },
     thisAward_type() {
-      var award_typeAll = this.$store.getters.getAward_Type;
-      var this_award_type;
-      for (var i = 0; i < award_typeAll.length; i++) {
-        if (award_typeAll[i].at_id == this.$route.params.Award_typeID) {
-          this_award_type = award_typeAll[i];
-        }
+      var award_type_id = this.$route.params.Award_typeID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Award/get_this_award_type/'+award_type_id)
+        .then(response => {
+          // console.log(response.data[0])
+          this.award_type = response.data[0]
+        })
+        this.data_load = true
       }
-      this.award_type = this_award_type;
-      return this_award_type;
+      var this_award_type = this.award_type
+      return this_award_type
     }
   }
 };

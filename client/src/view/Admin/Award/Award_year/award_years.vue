@@ -39,7 +39,14 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data(){
+    return{
+      data_load:false,
+      data_award_year:''
+    }
+  },
   methods: {
     addaward_year() {
       this.$router.push("/addaward_year");
@@ -65,6 +72,9 @@ export default {
         if (willDelete) {
           this.$store.dispatch("Delete_Award_year", FD);
           swal({ title: "Delete Success.", icon: "success" });
+          setTimeout(() => {
+            this.data_load=false
+          },100);
           // console.log(FD)
         } else {
           // swal("Your imaginary file is safe!");
@@ -82,11 +92,17 @@ export default {
       return user;
     },
     Award_years() {
-      return this.$store.getters.getAward_Years;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+"Award/get_all_award_years")
+        .then(response => {
+          // console.log(response)
+          this.data_award_year = response.data
+        })
+      this.data_load = true
+      }
+      var award_year_all = this.data_award_year
+      return award_year_all
     }
-  },
-  created() {
-    this.$store.dispatch("initDataAward_years");
   }
 };
 </script>

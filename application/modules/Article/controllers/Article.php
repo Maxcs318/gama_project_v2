@@ -23,6 +23,48 @@
         {
             echo $this->article_model->get_all_article();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get article
+        public function get_article($number_of_rows,$category,$pagenow)
+        {
+            echo $this->article_model->get_article($number_of_rows,$category,$pagenow);
+        }
+        // get this article
+        public function get_this_article($id)
+        {
+            $article = json_decode($this->article_model->get_this_article($id));
+            if(sizeof($article)==0){
+                $files_upload = false;
+            }else{
+                $key = $article[0]->a_file_key;
+                $files_upload = json_decode($this->Files_Upload_model->get_file_by_key($key));
+            }
+            $article_and_files = json_encode([$article,$files_upload]);
+            echo $article_and_files;
+        }
+        // get all article like
+        public function get_all_article_like($title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->article_model->get_all_article_like($title_search);
+        }
+        
+        // article_category
+        public function get_this_article_category($id)
+        {
+            $article_category = json_decode($this->article_model->get_this_article_category($id));
+            
+            echo json_encode($article_category);
+        }
+        //get random article
+        public function get_random_article($pcs)
+        {
+            echo $this->article_model->get_random_article($pcs);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get all Article_Category
         public function get_all_article_category()
         {
@@ -339,6 +381,10 @@
                 }
             }
         // delete article category
+        public function check_article_and_article_category($id)
+        {
+            echo $this->article_model->check_article_and_article_category($id);
+        }
         public function delete_article_category()
         {
             // check status for delete

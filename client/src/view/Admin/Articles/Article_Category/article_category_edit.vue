@@ -14,8 +14,8 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitArticle_Category">
               <center>
-                <img v-if="url" :src="url" max-width="250px" height="250px" />
-                <img v-else :src="getImgUrl(article.ac_image)" max-width="250px" height="250px" />
+                <img v-if="url" :src="url" width="100%"/>
+                <img v-else :src="getImgUrl(data_article_category.ac_image)" width="100%"/>
               </center>
               <br />
               <center>
@@ -36,13 +36,13 @@
               <br />
               <input
                 type="text"
-                v-model="article.ac_title"
+                v-model="data_article_category.ac_title"
                 class="form-control"
                 placeholder="ชื่อ ประเภท ของบทความ"
                 required
               />
               <br />
-              <textarea v-model="article.ac_description" class="form-control textarea" placeholder="รายละเอียด" rows="6"></textarea>
+              <textarea v-model="data_article_category.ac_description" class="form-control textarea" placeholder="รายละเอียด" rows="6"></textarea>
               <br />
 
               <br />
@@ -62,15 +62,14 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      article: {
-        ac_title: "",
-        ac_description: ""
-      },
       url: null,
-      fileimage: ""
+      fileimage: "",
+      data_load:false,
+      data_article_category:''
     };
   },
   methods: {
@@ -94,7 +93,7 @@ export default {
       }
     },
     submitArticle_Category() {
-      var jsonAC = JSON.stringify(this.article);
+      var jsonAC = JSON.stringify(this.data_article_category);
       var FD = new FormData();
       if (this.url != null) {
         FD.append("userfile", this.fileimage);
@@ -115,20 +114,22 @@ export default {
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        // this.$router.go(-1)
+        this.$router.go(-1)
       }
       return user;
     },
     Article_Category() {
-      var AC_All = this.$store.getters.getArticle_Category;
-      var AC;
-      for (var i = 0; i < AC_All.length; i++) {
-        if (AC_All[i].ac_id == this.$route.params.Article_CategoryID) {
-          AC = AC_All[i];
-        }
+      var ac_id = this.$route.params.Article_CategoryID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Article/get_this_article_category/'+ac_id)
+        .then(response => {
+          // console.log(response.data[0])
+          this.data_article_category = response.data[0]
+        })
+        this.data_load = true
       }
-      this.article = AC;
-      return AC;
+      var this_category = this.data_article_category
+      return this_category
     }
   }
 };

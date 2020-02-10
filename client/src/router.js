@@ -126,7 +126,7 @@ export const router = new VueRouter({
         // start router in navbar
         { path : "/aboutmember",component : AboutMember },
         { path : "/newsandactivities/:Page",name : 'newsandactivities',component : News },
-        { path : "/articles/:Page",name : 'articles',component : Articles },
+        { path : "/articles/:ArticleCategory/:Page",name : 'articles',component : Articles },
         { path : "/training_courses/:Page", name : 'training_courses' ,component : TrainingCourses },
         { path : "/books/:Page", name : 'books' ,component : Books },
         { path : "/contact",component : Contact },
@@ -143,7 +143,7 @@ export const router = new VueRouter({
         { path : "/newsandactivity/:NewsID",name:"newsandactivity",component : thisNews },
         { path : "/article/:ArticleID",name:"article",component : thisArticle },
 
-        { path : "/productall/:Page",name:"productall",component : productall },
+        { path : "/productall/:ProductCategory/:Page",name:"productall",component : productall },
         { path : "/product/:ProductID",name:"product",component : product },
 
         { path : "/listroom/:Page",name:"listroom",component : ListRoom },
@@ -153,7 +153,7 @@ export const router = new VueRouter({
         { path : "/gallerylist/:Page" ,name:"gallerylist",component : GalleryList },
         { path : "/gallery/:GalleryID",name:"gallery",component : Gallery },
 
-        { path : "/academic_articles/:Page",name : 'academic_articles',component : Academic_Articles },
+        { path : "/academic_articles/:AcademicArticleCategory/:Page",name : 'academic_articles',component : Academic_Articles },
         { path : "/academic_article/:AcademicArticleID",name:"academic_article",component : Academic_Article },
 
         { path : "/online_journals/:Page",name:"online_journals",component : Online_Jurnals },
@@ -162,7 +162,7 @@ export const router = new VueRouter({
         { path : "/research/:ResearchID",name:"research",component : Reserach },
         
         
-        { path : "/Awards/:Page",name:'Awards',component : Award_Show },
+        { path : "/Awards/:AwardType/:AwardYear/:Page",name:'Awards',component : Award_Show },
 
 
     //Admin - - - >
@@ -186,7 +186,7 @@ export const router = new VueRouter({
 
         { path : "/AdminM/:Page",name:'AdminM',component : admin_member_list },
 
-        { path : "/AdminAw/:Page",name:'AdminAw',component : admin_award_list },
+        { path : "/AdminAw/:AwardType/:AwardYear/:Page",name:'AdminAw',component : admin_award_list },
         { path : "/AdminC",name:'AdminC',component : admin_company },
         { path : "/AdminAwt",name:'AdminAwt',component : admin_award_type },
         { path : "/AdminAwy",name:'AdminAwy',component : admin_award_year },
@@ -256,8 +256,42 @@ export const router = new VueRouter({
 
         { path : "*", redirect : "/" }
     ],
-    
     scrollBehavior (to, from, savedPosition) {
         return { x: 0, y: 0 };
     }
+
+    // scrollBehavior (to, from, savedPosition) {
+    //     const position = {};
+    
+    //     if (savedPosition) {
+    //       position.x = savedPosition.x;
+    //       position.y = savedPosition.y;
+    //     } else {
+    //     return new Promise(resolve => {
+    //       this.app.$root.$once('scrollBeforeEnter', () => {
+    //         resolve(position);
+    //       });
+    //     });
+    //   }
+    // }
+
+    // scrollBehavior (to, from, savedPosition) {
+    //     return new Promise((resolve, reject) => {
+    //       setTimeout(() => {
+    //         resolve( savedPosition || { x: 0, y: 0 } )
+    //       }, 500)
+    //     })
+    //   },
+
+    // scrollBehavior: (to, from, savedPosition) => {
+    //     if (savedPosition) {
+    //       return savedPosition;
+    //     } else if (to.hash) {
+    //       return {
+    //         selector: to.hash
+    //       };
+    //     } else {
+    //       return { x: 0, y: 0 };
+    //     }
+    //   }
 })

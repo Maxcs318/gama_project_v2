@@ -122,7 +122,7 @@ export default {
       this.$router.push("/AdminR/1");
     },
     award() {
-      this.$router.push("/AdminAw/1");
+      this.$router.push("/AdminAw/all/now/1");
     },
     order_complete() {
       this.$router.push("/AdminListOrder_delivered/1");

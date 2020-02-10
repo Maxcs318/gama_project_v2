@@ -1,25 +1,32 @@
 <template>
     <div class="container ">
-        <h4>Product</h4> 
+        <h4><center>สินค้า</center></h4> <br>
         <div class="row">
-            <div class="col-lg-12">
-                <select v-model="selected" class="form-control">
-                    <option selected value>สินค้าทั้งหมด</option>
+            <div class="col-lg-6 col-12">
+                <select v-model="product_category" class="form-control select" @click="changeCategory(product_category)">
+                    <option selected value='all'>สินค้าทั้งหมด</option>
                     <option v-for=" pc in Product_Category " :value="pc.pc_id">{{pc.pc_title}}</option>
                 </select>
                 <br />
             </div>
+            <div class="col-lg-6 col-12">
+                <input type="text" class="form-control" v-model="searching" placeholder="ค้นหา จากสินค้าทั้งหมด">
+                <p v-if="searching!=''" style="text-align: right;"> <br>
+                เจอทั้งหมด {{find}} รายการ
+                </p>    
+                <br>
+            </div>
         </div>
         <div class="row">
-            <div class="col-lg-3 col-xs-12" v-for="(product,index) in ProductAll.slice().reverse().slice((page*data_in_page),(page+1)*data_in_page)" :key="index">
+            <div class="col-lg-3 col-xs-12" v-for="(product,index) in ProductAll" :key="index">
                 <img :src="getImgUrlProduct(product.p_image)" width="100%" @click="seethisPageProduct(product.p_id)">
                 <h5 @click="seethisPageProduct(product.p_id)">{{product.p_name}}</h5>
                 <p style="text-align: center;">{{product.p_price}} ฿</p>
-                    <div v-for="PC in Product_Category">
+                    <!-- <div v-for="PC in Product_Category">
                         <p style="text-align: right;" v-if="product.p_category == PC.pc_id">
                             {{PC.pc_title}}
                         </p>
-                    </div>
+                    </div> -->
                 <br>
             </div>
         </div>
@@ -43,17 +50,25 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     data() {
         return {
+            data_product:'',
+            data_size:'',
+            product_category:'',
+            data_load:false,
             page: 0,
             data_in_page: 12,
             length_page: 0,
             page_start: 0,
             page_end: 0,
             isActive: [],
+            searching:'',
+            find:null,
 
-            selected:''
+            data_product_category:'',
+            data_load_category:false
         };
     },
     methods:{
@@ -69,31 +84,58 @@ export default {
         seethisPageProduct(thisproduct){
             this.$router.push({name:'product',params:{ProductID:thisproduct}});
         },
+        changeCategory(selected_category){
+            if(this.product_category != this.$route.params.ProductCategory ){
+                this.$router.push({
+                name: "productall",
+                params: { ProductCategory: selected_category,Page: 1 }
+                });
+            }
+        },
+    },
+    watch:{
+        $route (to, from){
+            this.data_load = false;
+        },
+        searching(){
+            this.do_search
+        },
+        product_category(){
+            this.do_search
+        }
+
     },
     computed:{
         Product_Category(){
-            return this.$store.getters.getProduct_Category;
-        },
-        ProductSelected(){
-            var products = this.$store.getters.getProduct
-            var product_selected = products
-                if (this.selected == '') {
-                    return products
-                } else {
-                    return products.filter(item => {
-                        return item.p_category.indexOf(this.selected) > -1;
-                    });                
-                }
+            if(this.data_load_category==false){
+                axios.get(this.$store.getters.getBase_Url+'Product/get_all_product_category')
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_product_category = response.data
+                })
+                this.data_load_category = true
+            }
+            var product_category_all = this.data_product_category
+            return product_category_all
         },
         ProductAll(){
             var setpage = this.$route.params.Page;
-            var product_all = this.ProductSelected
+            var setcategory = this.$route.params.ProductCategory;
+            this.product_category = setcategory;
+            if(this.data_load==false && this.searching == ''){
+                axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/'+this.product_category+'/'+setpage)
+                .then(response => {
+                    // console.log(response.data),
+                    this.data_size = response.data[0],
+                    this.data_product = response.data[1]
+                })
+                this.data_load = true
+            }
             var p_conpute = 2;
             var p_start = setpage;
             var p_end = Math.ceil(setpage / 1 + p_conpute);
-
             this.page = setpage - 1;
-            this.length_page = Math.ceil(product_all.length / this.data_in_page); // set page all
+            this.length_page = Math.ceil(this.data_size / this.data_in_page); // set page all
             // set start && end paging
             if (setpage > p_conpute) {
                 p_start = setpage - p_conpute;
@@ -106,7 +148,6 @@ export default {
             }
             this.page_start = p_start;
             this.page_end = p_end;
-
             this.isActive = [];
             for (var i = 0; i <= this.length_page; i++) {
                 if (i == this.$route.params.Page) {
@@ -115,16 +156,30 @@ export default {
                 this.isActive.push(false);
                 }
             }
-            return product_all
+            return this.data_product;
         },
         path_files(){
             return this.$store.getters.getPath_Files
+        },
+        do_search(){
+            if(this.searching[0] == ' '){
+                this.searching = ''
+            }
+            if(this.searching.length>0){
+                var search = encodeURI(this.searching);
+                axios.get(this.$store.getters.getBase_Url+'Product/get_all_product_like/'+this.product_category+'/'+search)
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_size = 0,
+                    this.find = response.data[0],
+                    this.data_product = response.data[1]
+                })
+                this.length_page = 0;
+            }else{
+                this.data_load = false;
+                this.find = null;
+            }
         }
-    },
-    created(){
-        this.$store.dispatch("initDataProduct")
-        this.$store.dispatch("initDataProduct_Category")
-        this.$store.dispatch("initDataProduct_Image")
     }
 }
 </script>

@@ -8,7 +8,7 @@
         <!-- {{Order_Status}} -->
       </div>
     </div>
-    <div class="row" v-if="Order!=0 && Shipping_Address">
+    <div class="row" v-if="Order && data_shipping_address && data_order_status.os_id == '2'">
       <div class="col-lg-12 col-xs-12">
         <table class="table" style="width:100%; text-align: center;" v-if="Order">
           <tr>
@@ -17,7 +17,7 @@
             <th>จำนวน</th>
             <th>ยอดรวมชำระ</th>
           </tr>
-          <tr v-for="order_item in Order_Items">
+          <tr v-for="order_item in data_order_items">
             <td>{{order_item.oi_product_id}}</td>
             <td>{{order_item.oi_product_price}}</td>
             <td>{{order_item.oi_quantity}}</td>
@@ -28,42 +28,39 @@
         <center>
           ยอดรวมชำระ : {{ Order.o_total_price }} ฿
           <br />
-          <div
-            v-for="os in Order_Status"
-            v-if="os.os_id == Order.o_status_id"
-          >สถานะใบสั่งซื้อ : {{os.os_title}}</div>
+          <div>สถานะใบสั่งซื้อ : {{data_order_status.os_title}}</div>
           <!-- Order Create Date : {{ Order.o_create_date }}<br> -->
         </center>
         <br />
-        <div class="row" v-if="Moneytransfer && Banking && Payment">
+        <div class="row" v-if="data_moneytransfer && data_payment">
           <div class="col-lg-4 col-xs-12">
-            <img :src="getImgUrl(Moneytransfer.mtf_slip)" width="100%" />
+            <img :src="getImgUrl(data_moneytransfer.mtf_slip)" width="100%" />
           </div>
           <div class="col-lg-4 col-xs-12">
             <h5 class="header">การชำระเงิน</h5>
-            ชื่อ : {{Moneytransfer.mtf_title}}
+            หัวข้อการชำระเงิน : {{data_moneytransfer.mtf_title}}
             <br />
-            ชำระด้วย : {{Payment.pm_title}}
+            ชำระด้วย : {{data_payment.pm_title}}
             <br />
-            <div v-if="Banking != 'No'">ธนาคาร : {{Banking.b_name}}</div>
-            วันที่ชำระเงิน : {{Moneytransfer.mtf_date}}
+            <div v-if="data_banking">ธนาคาร : {{data_banking.b_name}}</div>
+            วันที่ชำระเงิน : {{data_moneytransfer.mtf_date}}
             <br />
-            ความคิดเห็น : {{Moneytransfer.mtf_comment}}
+            ความคิดเห็น : {{data_moneytransfer.mtf_comment}}
             <br />
           </div>
-          <div class="col-lg-4 col-xs-12" v-if="Shipping_Address">
+          <div class="col-lg-4 col-xs-12" v-if="data_shipping_address">
             <h5 class="header">ที่อยู่สำหรับจัดส่ง</h5>
-            ชื่อ : {{Shipping_Address.sa_title}}
+            หัวข้อที่อยู่จัดส่ง : {{data_shipping_address.sa_title}}
             <br />
-            ที่อยู่ : {{Shipping_Address.sa_address}}
+            ที่อยู่ : {{data_shipping_address.sa_address}}
             <br />
-            รหัสไปรษณีย์ : {{Shipping_Address.sa_postcode}}
+            รหัสไปรษณีย์ : {{data_shipping_address.sa_postcode}}
             <br />
-            บริษัท : {{Shipping_Address.sa_company}}
+            บริษัท : {{data_shipping_address.sa_company}}
             <br />
-            อีเมลล์ : {{Shipping_Address.sa_email}}
+            อีเมลล์ : {{data_shipping_address.sa_email}}
             <br />
-            เบอร์โทรศัพท์ : {{Shipping_Address.sa_phone}}
+            เบอร์โทรศัพท์ : {{data_shipping_address.sa_phone}}
             <br />
           </div>
           <div class="col-lg-12 col-xs-12">
@@ -80,11 +77,11 @@
       <div class="col-lg-12 col-xs-12">
         <br />
         <h5>
-          <center>ใบสั่งซื้อขัดข้อง : ไม่มีใบสั่งซื้อนี้</center>
+          <center> {{text_alert}} </center>
         </h5>
       </div>
     </div>
-    <div class="row" v-if="Moneytransfer">
+    <div class="row" v-if="data_moneytransfer && data_order_status.os_id == 2">
       <div class="col-lg-6 col-xs-12"></div>
       <div class="col-lg-6 col-xs-12">
         <div class="row">
@@ -103,10 +100,21 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      order_code: this.$route.params.CodeOrder
+        data_order:'',
+        data_order_status:'',
+        data_order_items:'',
+        data_shipping_address:'',
+        data_moneytransfer:'',
+        data_payment:'',
+        data_banking:'',
+        data_load:false,
+
+        text_alert:'',
+        order_code: this.$route.params.CodeOrder
     };
   },
   methods: {
@@ -157,85 +165,33 @@ export default {
       return this.$store.getters.getPath_Files;
     },
     Order() {
-      var od = this.$store.getters.getOrder;
-      var x = null;
-      for (var i = 0; i < od.length; i++) {
-        if (od[i].o_code_order == this.$route.params.CodeOrder) {
-          x = od[i];
-        }
+      var order_code = this.$route.params.CodeOrder
+      if(this.data_load==false){
+        var FD = new FormData();
+        FD.append("order_code", JSON.stringify(order_code));
+          axios.post(this.$store.getters.getBase_Url+'Order/get_order_by_code',FD)
+          .then(response => {
+            // console.log(response.data)
+            this.data_order = response.data[0],
+            this.data_order_items = response.data[1],
+            this.data_order_status = response.data[2],
+            this.data_shipping_address = response.data[3],
+            this.data_moneytransfer = response.data[4],
+            this.data_payment = response.data[5],
+            this.data_banking = response.data[6]
+          })
+          setTimeout(() => {
+            this.text_alert = 'ใบสั่งซื้อขัดข้อง : ไม่มีใบสั่งซื้อนี้ หรือ status ของใบสั่งซื้ออาจจะผ่านการตรวจเรียบร้อย'
+          },1000);
+          
+        this.data_load = true
       }
-      return x;
-    },
-    Order_Status() {
-      return this.$store.getters.getOrder_Status;
-    },
-    Order_Items() {
-      var odi = this.$store.getters.getOrder_Item;
-      var order_i = [];
-      var product_all = this.$store.getters.getProduct;
-      for (var i = 0; i < odi.length; i++) {
-        if (odi[i].oi_order_id == this.Order.o_id) {
-          // chang product id -> product name
-          for (var j = 0; j < product_all.length; j++) {
-            if (product_all[j].p_id == odi[i].oi_product_id) {
-              odi[i].oi_product_id = product_all[j].p_name;
-            }
-          }
-          order_i.push(odi[i]);
-        }
-      }
-      return order_i;
-    },
-    Shipping_Address() {
-      var my_sa = this.$store.getters.getShipping_Address;
-      var sa_this_order = null;
-      for (var i = 0; i < my_sa.length; i++) {
-        if (my_sa[i].sa_id == this.Order.o_shipping_address_id) {
-          sa_this_order = my_sa[i];
-        }
-      }
-      return sa_this_order;
-    },
-    Moneytransfer() {
-      var money = this.$store.getters.getMoney_Transfer;
-      var this_money = null;
-      for (var i = 0; i < money.length; i++) {
-        if (money[i].mtf_id == this.Order.o_money_transfer_id) {
-          this_money = money[i];
-        }
-      }
-      return this_money;
-    },
-    Payment() {
-      var pm = this.$store.getters.getPayments;
-      var mtf = this.Moneytransfer;
-      var this_pm;
-      for (var j = 0; j < pm.length; j++) {
-        if (mtf.mtf_payments_id == pm[j].pm_id) {
-          this_pm = pm[j];
-        }
-      }
-      return this_pm;
-    },
-    Banking() {
-      var bk = this.$store.getters.getBanking;
-      var mtf = this.Moneytransfer;
-      var this_bk;
-      if (mtf.mtf_banking_id > 0) {
-        for (var j = 0; j < bk.length; j++) {
-          if (mtf.mtf_banking_id == bk[j].b_id) {
-            this_bk = bk[j];
-          }
-        }
-      } else {
-        this_bk = "No";
-      }
-      return this_bk;
+      return this.data_order
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     }

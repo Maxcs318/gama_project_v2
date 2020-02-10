@@ -16,6 +16,57 @@
             $articleAll = $this->db->get($this->article)->result(); 
             return json_encode($articleAll);  
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get article
+        public function get_article($number_of_rows,$category,$pagenow)
+        {
+            // limit(1,2)  1 แรกคือจำนวน row ที่ต้องการ 2 หลัง คือ เริ่มจาก index ที่เท่าไหร่  
+            $this->db->order_by('a_id', 'DESC');
+            $index_start = ($pagenow-1)*$number_of_rows;
+
+            if($category != 'all'){
+                $article_result = $this->db->where('a_category',$category)->limit($number_of_rows,$index_start)->get($this->article)->result(); 
+                $article_row_all = $this->db->where('a_category',$category)->from($this->article)->count_all_results();
+            }else{
+                $article_result = $this->db->limit($number_of_rows,$index_start)->get($this->article)->result(); 
+                $article_row_all = $this->db->from($this->article)->count_all_results();
+            }
+            $result = [$article_row_all,$article_result];
+            return json_encode($result);      
+        }
+        // get this article
+        public function get_this_article($id)
+        {   
+            $result = $this->db->where('a_id',$id)->get($this->article)->result();
+            return json_encode($result);  
+        }
+        // get all article like ...
+        public function get_all_article_like($title_search)
+        {   
+            $this->db->order_by('a_id', 'DESC');
+            $article_result = $this->db->like('a_title',$title_search,'both')->get($this->article)->result();
+            $article_row_all = sizeof($article_result);
+            $result = [$article_row_all,$article_result];
+            return json_encode($result);  
+        }
+        // get this article_category
+        public function get_this_article_category($id)
+        {   
+            $result = $this->db->where('ac_id',$id)->get($this->article_category)->result();
+            return json_encode($result);  
+        }
+        // get random article
+        public function get_random_article($pcs)
+        {
+            $this->db->order_by('rand()');
+            $this->db->limit($pcs);
+            $article_result = $this->db->get($this->article)->result();
+            return json_encode($article_result);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get all Article Category
         public function get_all_article_category()
         {
@@ -64,6 +115,12 @@
             return json_encode($this->db->where($where)->update($this->article_category,$data));   
         }
         // delete article category
+        public function check_article_and_article_category($id)
+        {
+            $result = $this->db->where('a_category',$id)->get($this->article)->result(); 
+            
+            return json_encode(sizeof($result));
+        }
         public function delete_article_category($where = array())
         {
             return json_encode($this->db->where($where)->delete($this->article_category));

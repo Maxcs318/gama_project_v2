@@ -27,10 +27,12 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      award_year: []
+      data_load:false,
+      award_year: ''
     };
   },
   methods: {
@@ -55,15 +57,17 @@ export default {
       return user;
     },
     thisAward_year() {
-      var award_yearAll = this.$store.getters.getAward_Years;
-      var this_award_year;
-      for (var i = 0; i < award_yearAll.length; i++) {
-        if (award_yearAll[i].ay_id == this.$route.params.Award_yearID) {
-          this_award_year = award_yearAll[i];
-        }
+      var award_year_id = this.$route.params.Award_yearID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Award/get_this_award_year/'+award_year_id)
+        .then(response => {
+          // console.log(response.data[0])
+          this.award_year = response.data[0]
+        })
+        this.data_load = true
       }
-      this.award_year = this_award_year;
-      return this_award_year;
+      var this_award_year = this.award_year
+      return this_award_year
     }
   }
 };

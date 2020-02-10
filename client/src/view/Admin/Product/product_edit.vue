@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <center>
-      <h4 class="header">แก้ไขสินค้า</h4>
+      <h4 class="header">แก้ไข สินค้า</h4>
     </center>
     <div class="row mt-5" v-if="thisProduct && the_user">
       <div class="col-lg-3 col-xs-12"></div>
       <div class="col-lg-6 col-xs-12">
         <center>
-          <img v-if="url" :src="url" max-width="250px" height="250px" />
-          <img v-else :src="getImgUrl(thisProduct.p_image)" max-width="250px" height="250px" />
+          <img v-if="url" :src="url" width="100%"/>
+          <img v-else :src="getImgUrl(thisProduct.p_image)" width="100%" />
         </center>
         <br />
         <br />
@@ -34,6 +34,22 @@
             placeholder="ชื่อสินค้า"
             required
           />
+          <br>
+          ประเภทสินค้า
+          <select
+            v-model="productE.p_category"
+            class="form-control select"
+            placeholder="ประเภทสินค้า"
+            required
+          >
+            <option
+            class="option"
+              v-for="(pc,index) in product_category"
+              :key="index"
+              :value="pc.pc_id"
+            >{{ pc.pc_title }}</option>
+          </select>
+
           <br />รายละเอียด
           <textarea
             v-model="productE.p_description"
@@ -50,6 +66,7 @@
                 v-model="productE.p_price"
                 class="form-control"
                 placeholder="ราคาปกติ"
+                @keypress="isNumber($event)"
                 required
               />
             </div>
@@ -60,11 +77,12 @@
                 v-model="productE.p_price2"
                 class="form-control"
                 placeholder="ราคาสมาชิก"
+                @keypress="isNumber($event)"
                 required
               />
             </div>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-lg-6">
               จำนวนสินค้า
               <input
@@ -72,48 +90,32 @@
                 v-model="productE.p_quantity"
                 class="form-control"
                 placeholder="จำนวนสินค้า"
+                @keypress="isNumber($event)"
                 required
               />
             </div>
-            <div class="col-lg-6">
-              ประเภทสินค้า
-              <select
-                v-model="productE.p_category"
-                class="form-control select"
-                placeholder="ประเภทสินค้า"
-                required
-              >
-                <option
-                class="option"
-                  v-for="(pc,index) in product_category"
-                  :key="index"
-                  :value="pc.pc_id"
-                >{{ pc.pc_title }}</option>
-              </select>
-            </div>
-            <!-- image in this product -->
-          </div>
+          </div> -->
           <br />
-          <div class="row" v-if="thisProduct_Image">
-            <h5 class="col-lg-12">Another Image</h5>
+          <div class="row" v-if="product_data_file">
+            <h5 class="col-lg-12">รูปภาพอื่่นๆของ สินค้า</h5>
             <div
               class="col-lg-3"
-              v-for="(pi,run) in thisProduct_Image"
+              v-for="(pi,run) in product_data_file"
               :key="run"
             >
-              <img class="admin-img" :src="getImgUrl(pi.pi_name)" />
+              <img class=" " :src="getImgUrl(pi.pi_name)" width="100%"/>
               <button
                 type="button"
                 class="form-control btn-danger"
                 @click="DeleteProduct_Image(pi.pi_id)"
-              >Delete</button>
+              >ลบ</button>
               <br />
               <br />
             </div>
           </div>
           <br />
           <!--  -->
-          <h5>New Another Image [ {{files.length}} ] Size Files All [ {{max_size_file}} byte ]</h5>
+          <h5> รูปภาพที่ต้องการเพิ่มใหม่ [ {{files.length}} ] Size Files All [ {{max_size_file}} byte ]</h5>
           <input
             type="file"
             ref="files"
@@ -125,7 +127,7 @@
           <br />
           <div class="row">
             <div class="col-6 block-center" v-for="(f,index) in files" :key="index">
-              <img class="admin-img" :src="another_image_pre[index]" />
+              <img class=" " :src="another_image_pre[index]" width="100%"/>
               <h5></h5>
               <b>{{index+1}}.</b>
               {{files[index].name }}
@@ -156,6 +158,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -164,7 +167,17 @@ export default {
       another_image_pre: [],
       fileimage: "",
       files: [],
-      max_size_file: 0
+      max_size_file: 0,
+
+      data_load:false,
+      text_alert:'',
+      product_data:'',
+      product_data_file:'',
+
+      data_product_category:'',
+      data_load_category:false,
+
+      check_delete_file:false
     };
   },
   methods: {
@@ -191,7 +204,27 @@ export default {
       var FD_delete = new FormData();
       FD_delete.append("product_imageID", product_imageID);
       FD_delete.append("creator", JSON.stringify(this.$store.state.log_on));
-      this.$store.dispatch("Delete_Product_Image", FD_delete);
+      
+      this.$swal({
+          title: "Are you sure?",
+          text: "You want delete this Image ",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+          this.$store.dispatch("Delete_Product_Image", FD_delete);
+          setTimeout(() => {
+            this.check_delete_file=true
+            this.data_load=false
+          },100);
+          swal({title: "Delete Success.",icon: "success",});
+        } else {
+          //
+        }
+      })
+
     },
     // another image
     ChooseFiles() {
@@ -240,36 +273,43 @@ export default {
         this.$router.go(-1);
       }, 2000);
       this.$swal("Edit Product Success .", "", "success");
-    }
+    },
+    // @keypress="isNumber($event)"
+    isNumber: function(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode != 9)) {
+            evt.preventDefault();
+        } else {
+            return true;
+        }
+    },
   },
   computed: {
     path_files() {
       return this.$store.getters.getPath_Files;
     },
     thisProduct() {
-      var productAll = this.$store.getters.getProduct;
-      var product;
-      for (var i = 0; i < productAll.length; i++) {
-        if (productAll[i].p_id == this.$route.params.ProductID) {
-          product = productAll[i];
+      var productID = this.$route.params.ProductID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_this_product/'+productID)
+        .then(response => {
+            // console.log(response.data),
+            this.product_data = response.data[0][0],
+            this.product_data_file = response.data[1]
+        })
+        this.data_load = true
+        if(this.product_data.length == 0){
+          setTimeout(() => {
+            this.text_alert = 'This Page No Data.'
+          },1000);
         }
       }
-      this.productE = product;
-      return product;
-    },
-    thisProduct_Image() {
-      var product_imageAll = this.$store.getters.getProduct_Image;
-      var product_image = [];
-      for (var i = 0; i < product_imageAll.length; i++) {
-        if (product_imageAll[i].pi_image_key == this.thisProduct.p_image_key) {
-          product_image.push(product_imageAll[i]);
-        }
+      var product_show = this.product_data
+      if(this.check_delete_file == false){
+        this.productE = this.product_data
       }
-      if (product_image.length != 0) {
-        return product_image;
-      } else {
-        return false;
-      }
+      return product_show;
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
@@ -279,7 +319,16 @@ export default {
       return user;
     },
     product_category() {
-      return this.$store.getters.getProduct_Category;
+      if(this.data_load_category==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_all_product_category')
+        .then(response => {
+            // console.log(response.data)
+            this.data_product_category = response.data
+        })
+        this.data_load_category = true
+      }
+      var product_category_all = this.data_product_category
+      return product_category_all
     }
   }
 };

@@ -7,23 +7,23 @@
                         <h4 class="header"><center>แก้ไขประเภท ของบทความวิชาการ</center></h4>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" >
                     <div class="col-lg-3 col-xs-12"></div>
                     <div class="col-lg-6 col-xs-12">
                         <form @submit.prevent="submitAcademicArticle_Category">
                             <center>                            
-                            <img class="admin-img" v-if="url"  :src="url" width="100%"/>
-                            <img class="admin-img" v-else :src="getImgUrl(academic_article.aac_image)" width="100%">
+                            <img  v-if="url"  :src="url" width="100%"/>
+                            <img  v-else :src="getImgUrl(Academic_Article_Category.aac_image)" width="100%">
                             </center>
                             <br>
                             <button type="button" class="form-control btn-success block-center col-lg-6" @click="ChooseFilesFirst">เลือกรูป</button>
                             <input id="chooseImage" ref="filesfirst" style="display: none;" type="file" @change="handleFilesFirst">
                             <br>
                             ชื่อประเภท ของบทความวิชาการ
-                            <input type="text" v-model="academic_article.aac_title" class="form-control" placeholder="ชื่อ ประเภท ของบทความวิชาการ" required>
+                            <input type="text" v-model="academic_article_category.aac_title" class="form-control" placeholder="ชื่อ ประเภท ของบทความวิชาการ" required>
                             <br>
                             รายละเอียด
-                            <textarea v-model="academic_article.aac_description" class="form-control textarea" placeholder="รายละเอียด" rows="6" ></textarea>
+                            <textarea v-model="academic_article_category.aac_description" class="form-control textarea" placeholder="รายละเอียด" rows="6" ></textarea>
                             <br>
             
                             <br>
@@ -43,16 +43,15 @@
     </div>
 </template>
 <script>
-
+import axios from "axios";
 export default {
     data(){
         return{
-            academic_article:{
-                aac_title:'',
-                aac_description:''
-            },
+            academic_article_category:'',
             url: null,
             fileimage:'',
+
+            data_load:false
 
         }
     },
@@ -77,7 +76,7 @@ export default {
             }
         },
         submitAcademicArticle_Category(){
-            var jsonAAC = JSON.stringify(this.academic_article)
+            var jsonAAC = JSON.stringify(this.academic_article_category)
             var FD  = new FormData()
                 if(this.url != null){
                     FD.append('userfile',this.fileimage)
@@ -103,15 +102,17 @@ export default {
             return user
         },
         Academic_Article_Category(){
-            var AAC_All = this.$store.getters.getAcademic_Article_Category
-            var AAC 
-            for(var i=0; i<AAC_All.length; i++){
-                if(AAC_All[i].aac_id == this.$route.params.AcademicArticle_CategoryID){
-                    AAC = AAC_All[i]
-                }
+            var aac_id = this.$route.params.AcademicArticle_CategoryID
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+'Academic_article/get_this_academic_article_category/'+aac_id)
+                .then(response => {
+                    // console.log(response.data[0])
+                    this.academic_article_category = response.data[0]
+                })
+                this.data_load = true
             }
-            this.academic_article = AAC 
-            return AAC
+            var this_academic_category = this.academic_article_category
+            return this_academic_category
         },
     },
 }

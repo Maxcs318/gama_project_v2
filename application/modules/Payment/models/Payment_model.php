@@ -17,9 +17,16 @@
             return json_encode($this->db->get($this->payment)->result());
         }
         
+        ////////////////////////////////////////////////////////////////////////////////////////
 
+        // payment_in_money_transfer
+        public function payment_in_money_transfer( $payment_id )
+        {
+            $result = $this->db->where('pm_id',$payment_id)->get($this->payment)->result(); 
+            return json_encode($result[0]); 
+        }
 
-
+        ////////////////////////////////////////////////////////////////////////////////////////
 
         
     }

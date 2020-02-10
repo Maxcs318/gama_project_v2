@@ -14,7 +14,7 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitAcademicArticle">
               <center>
-                <img class="admin-img" v-if="url" :src="url" />
+                <img class=" " v-if="url" :src="url" width="100%"/>
               </center>
               <br />
               <button

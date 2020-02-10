@@ -6,10 +6,11 @@
     <div class="row" v-if="thisGallery">
       <div class="col-lg-3 col-xs-12"></div>
       <div class="col-lg-6 col-xs-12">
-        <img class="admin-img" v-if="url" :src="url" />
-        <img class="admin-img" v-else :src="getImgUrl(thisGallery.g_image)" />
+        <img class=" " v-if="url" :src="url" width="100%"/>
+        <img class=" " v-else :src="getImgUrl(thisGallery.g_image)" width="100%"/>
         <br />
         <br />
+        <p><center> รูปภาพ สำหรับ preview </center></p>
         <button
           type="button"
           class="form-control btn-success col-lg-12"
@@ -41,10 +42,10 @@
           ></textarea>
           <br />
 
-          <div class="row" v-if="thisGallery_Image">
+          <div class="row" v-if="gallery_data_file">
             <h5 class="col-lg-12">รูปกิจกรรมอื่นๆ</h5>
-            <div class="col-lg-6 block-center" v-for="(gi,run) in thisGallery_Image" :key="run">
-              <img class="admin-img" :src="getImgUrl(gi.gi_image)" />
+            <div class="col-lg-6 block-center" v-for="(gi,run) in gallery_data_file" :key="run">
+              <img class=" " :src="getImgUrl(gi.gi_image)" width="100%"/>
               <button
                 type="button"
                 class="form-control btn-danger"
@@ -68,7 +69,7 @@
           <br />
           <div class="row">
             <div class="col-6 block-center" v-for="(f,index) in files" :key="index">
-              <img class="admin-img" :src="another_image_pre[index]" />
+              <img class=" " :src="another_image_pre[index]" width="100%"/>
               <h5></h5>
               <b>{{index+1}}.</b>
               {{files[index].name }}
@@ -99,6 +100,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -107,7 +109,12 @@ export default {
       another_image_pre: [],
       fileimage: "",
       files: [],
-      max_size_file: 0
+      max_size_file: 0,
+      data_load:false,
+      text_alert:'',
+      gallery_data:'',
+      gallery_data_file:'',
+      check_delete_file:false
     };
   },
   methods: {
@@ -134,7 +141,26 @@ export default {
       var FD_delete = new FormData();
       FD_delete.append("gallery_imageID", gallery_imageID);
       FD_delete.append("creator", JSON.stringify(this.$store.state.log_on));
-      this.$store.dispatch("Delete_Gallery_Image", FD_delete);
+      
+      this.$swal({
+          title: "Are you sure?",
+          text: "You want delete this Image ?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+          this.$store.dispatch("Delete_Gallery_Image", FD_delete);
+          setTimeout(() => {
+            this.check_delete_file=true
+            this.data_load=false
+          },100);
+          swal({title: "Delete Success.",icon: "success",});
+        } else {
+          //
+        }
+      })
     },
     // another image
     ChooseFiles() {
@@ -191,29 +217,26 @@ export default {
       return this.$store.getters.getPath_Files;
     },
     thisGallery() {
-      var galleryAll = this.$store.getters.getGallery;
-      var gallery;
-      for (var i = 0; i < galleryAll.length; i++) {
-        if (galleryAll[i].g_id == this.$route.params.GalleryID) {
-          gallery = galleryAll[i];
-        }
+      var galleryID = this.$route.params.GalleryID;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Gallery/get_this_gallery/'+galleryID)
+        .then(response => {
+            // console.log(response.data)
+            this.gallery_data = response.data[0][0],
+            this.gallery_data_file = response.data[1]
+        })
+        this.data_load = true
+        // if(this.gallery_data.length == 0){
+        //   setTimeout(() => {
+        //     this.text_alert = 'This Page No Data.'
+        //   },1000);
+        // }
       }
-      this.galleryE = gallery;
-      return gallery;
-    },
-    thisGallery_Image() {
-      var gallery_imageAll = this.$store.getters.getGallery_Image;
-      var gallery_image = [];
-      for (var i = 0; i < gallery_imageAll.length; i++) {
-        if (gallery_imageAll[i].gi_gallery_id == this.thisGallery.g_id) {
-          gallery_image.push(gallery_imageAll[i]);
-        }
+      if(this.check_delete_file == false){
+        this.galleryE = this.gallery_data
       }
-      if (gallery_image.length != 0) {
-        return gallery_image;
-      } else {
-        return false;
-      }
+      var gallery_show = this.gallery_data
+      return gallery_show;
     },
     the_user() {
       var user = this.$store.getters.getThe_User;

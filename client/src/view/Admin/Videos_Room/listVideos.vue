@@ -1,6 +1,6 @@
 <template>
-        <div class="container" v-if="the_user">
-        <h4 class="header" v-if="thisRoom">วีดีโอทั้งหมดของ : {{thisRoom.vr_title}}</h4> <br>
+        <div class="container" v-if="the_user&&the_user.m_status=='admin'">
+        <h4 class="header" v-if="ListVideos">วีดีโอทั้งหมดของ : {{data_video_room.vr_title}}</h4> <br>
         <div class="row">
             <div class="col-lg-9 col-xs-12"></div>
             <div class="col-lg-3 col-xs-12">
@@ -18,13 +18,13 @@
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                     </tr>
-                    <tr v-for="(list,index) in ListVideos" :key="index" >
-                        <td>{{list.v_id}}</td>
+                    <tr v-for="(list,index) in data_videos" :key="index" >
+                        <td>{{index+1}}</td>
                         <td>{{list.v_title.slice(0,25)}}</td>
                         <td>{{list.v_create_date}}</td>
                         <td>{{list.v_update_date}}</td>
                         <td> <button class="form-control btn-warning" @click="editVideo(list.v_id)">แก้ไข</button> </td>
-                        <td> <button class="form-control btn-danger" @click="deleteVideo(list.v_id)">ลบ</button> </td>
+                        <td> <button class="form-control btn-danger" @click="deleteVideo(list.v_id,list.v_title)">ลบ</button> </td>
                     </tr>
                 </table>
             </div>
@@ -32,7 +32,15 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+    data(){
+        return{
+            data_video_room:'',
+            data_videos:'',
+            data_load:false,
+        }
+    },
     methods:{
         addvideos(){
             this.$router.push('/addvideos')
@@ -43,13 +51,13 @@ export default {
         seethisVideo(thisvideo){
             this.$router.push({name:'roomvideo',params:{VideoID:thisvideo}})
         },
-        deleteVideo(thisvideo){
+        deleteVideo(thisvideo,thisvideoName){
             var FD  = new FormData()
             FD.append('videoID',JSON.stringify(thisvideo))
             FD.append('creator',JSON.stringify(this.$store.state.log_on))
             this.$swal({
                 title: "Are you sure?",
-                text: "You want delete this Video Room ID "+thisvideo,
+                text: "You want delete this Video Name "+thisvideoName,
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -59,37 +67,40 @@ export default {
                     // console.log(thisvideo)
                     this.$store.dispatch("Delete_Video",FD)
                     swal({title: "Delete Success.",icon: "success",});
+                    setTimeout(() => {
+                        this.data_load=false
+                        this.searching = ''
+                    },100);
                 } else {
                     // swal("Your imaginary file is safe!");
                 }
             })
         }
     },
+    watch:{
+        $route (to, from){
+            this.data_load = false;
+        },
+    },
     computed:{
         ListVideos(){
-            var listvideosAll = this.$store.getters.getVideos
-            var listvideos = []
-            for(var i=0; i<listvideosAll.length; i++ ){
-                if( listvideosAll[i].v_room == this.$route.params.RoomID ){
-                    listvideos.push(listvideosAll[i])
-                }
+            var roomID = this.$route.params.RoomID
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+'Videos_room/get_this_video_room/'+roomID)
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_video_room = response.data[0][0],
+                    this.data_videos= response.data[1]
+                })
+                this.data_load = true
             }
-            return listvideos
-        },
-        thisRoom(){
-            var roomall = this.$store.getters.getVideo_Room 
-            var room_now    
-            for(var i=0;i<roomall.length;i++){
-                if(roomall[i].vr_id == this.$route.params.RoomID){
-                    room_now = roomall[i]
-                }
-            }
-            return room_now
+            var video = this.data_video_room
+            return video
         },
         the_user(){
             var user = this.$store.getters.getThe_User
             if( user.m_status != 'admin' ){
-                this.$router.go(-1)
+                // this.$router.go(-1)
             }
             return user
         }

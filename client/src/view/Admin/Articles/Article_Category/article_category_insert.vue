@@ -14,7 +14,7 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitArticle">
               <center>
-                <img v-if="url" :src="url" max-width="250px" height="250px" />
+                <img v-if="url" :src="url" width="100%" />
               </center>
               <br />
               <center>

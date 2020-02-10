@@ -14,7 +14,7 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitGallery">
               <center>
-                <img class="admin-img" v-if="url" :src="url" />
+                <img class=" " v-if="url" :src="url" width="100%"/>
               </center>
               <br />
               <button
@@ -46,7 +46,7 @@
               <br />
               <div class="row">
                 <div class="col-6 block-center" v-for="(f,index) in files" :key="index">
-                  <img class="admin-img" :src="another_image_pre[index]" />
+                  <img class=" " :src="another_image_pre[index]" width="100%"/>
                   <h5></h5>
                   <b>{{index+1}}.</b>
                   {{files[index].name }}

@@ -27,7 +27,7 @@
         </b-navbar-nav>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="/articles/1" class="nav-menu">บทความ</router-link>
+            <router-link to="/articles/all/1" class="nav-menu">บทความ</router-link>
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav>
@@ -42,7 +42,7 @@
         </b-navbar-nav>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="/Awards/1" class="nav-menu">รางวัล</router-link>
+            <router-link to="/Awards/all/now/1" class="nav-menu">รางวัล</router-link>
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav>
@@ -138,7 +138,7 @@ export default {
       this.$router.push("/listroom/1");
     },
     productall() {
-      this.$router.push("/productall/1");
+      this.$router.push("/productall/all/1");
     },
     admin() {
       this.$router.push("/Admin");

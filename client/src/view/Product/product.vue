@@ -6,7 +6,7 @@
         <br />
         <br />
         <div class="row">
-          <div class="col-lg-3 col-4">
+          <div class="col-lg-4 col-4">
             <img
               :src="getImgUrl(thisProduct.p_image)"
               width="100%"
@@ -14,9 +14,9 @@
             />
           </div>
           <div
-            class="col-lg-3 col-4"
-            v-if="thisProduct_Image"
-            v-for="(pi,index) in thisProduct_Image"
+            class="col-lg-4 col-4"
+            v-if="product_data_file"
+            v-for="(pi,index) in product_data_file"
             :key="index"
           >
             <img :src="getImgUrl(pi.pi_name)" width="100%" @click="see_this_pic(pi.pi_name)" />
@@ -28,25 +28,12 @@
       <div class="col-lg-7 col-xs-12" v-if="thisProduct">
         <p class="course-name">Name : {{thisProduct.p_name}}</p>
         <!-- <p class="course-category">Category : {{thisProduct.p_category}}</p> -->
-        <p class="course-price">฿{{thisProduct.p_price}}</p>
+        <p class="course-price">ราคาปกติ : ฿{{thisProduct.p_price}}</p>
         <p class="course-member-price">ราคาพิเศษสำหรับสมาชิก : ฿{{thisProduct.p_price2}}</p>
         <!-- <p class="course-date">{{thisProduct.p_date}}</p> -->
         <hr />
         
         <div class="row">
-          <!-- <div class="minus-btn col-lg-2 col-2">
-            <input type="button" value="-" class="form-control btn-danger" @click="removeproduct" />
-            <br />
-          </div>
-          <div class="col-lg-8 col-8">
-            <input type="text" class="form-control" v-model="amount" style="text-align:center" />
-            <br />
-          </div>
-
-          <div class="add-btn col-lg-2 col-2">
-            <input type="button" value="+" class="form-control btn-success" @click="addproduct" />
-            <br />
-          </div> -->
           <div class="col-lg-4 col-12">
             <button
               class="form-control btn-primary"
@@ -85,7 +72,12 @@ export default {
       amount: 1,
       total: 0,
       nowcart: [],
-      show_pic: ""
+      show_pic: "",
+
+      data_load:false,
+      text_alert:'',
+      product_data:'',
+      product_data_file:'',
     };
   },
   methods: {
@@ -132,32 +124,30 @@ export default {
       } else {
         this.total = 0;
       }
-    }
+    },
+    $route (to, from){
+      this.data_load = false;
+    },
   },
   computed: {
     thisProduct() {
-      var ProductAll = this.$store.getters.getProduct;
-      var product;
-      for (var i = 0; i < ProductAll.length; i++) {
-        if (ProductAll[i].p_id == this.$route.params.ProductID) {
-          product = ProductAll[i];
+      var productID = this.$route.params.ProductID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_this_product/'+productID)
+        .then(response => {
+            // console.log(response.data),
+            this.product_data = response.data[0][0],
+            this.product_data_file = response.data[1]
+        })
+        this.data_load = true
+        if(this.product_data.length == 0){
+          setTimeout(() => {
+            this.text_alert = 'This Page No Data.'
+          },1000);
         }
       }
-      return product;
-    },
-    thisProduct_Image() {
-      var product_imageAll = this.$store.getters.getProduct_Image;
-      var product_image = [];
-      for (var i = 0; i < product_imageAll.length; i++) {
-        if (product_imageAll[i].pi_image_key == this.thisProduct.p_image_key) {
-          product_image.push(product_imageAll[i]);
-        }
-      }
-      if (product_image.length != 0) {
-        return product_image;
-      } else {
-        return false;
-      }
+      var product_show = this.product_data
+      return product_show;
     },
     path_files() {
       this.show_pic = this.thisProduct.p_image;

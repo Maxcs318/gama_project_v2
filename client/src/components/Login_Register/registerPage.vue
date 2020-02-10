@@ -45,7 +45,7 @@
 
 <script>
 import md5 from 'js-md5'
-
+import axios from "axios";
 export default {
     data(){
         return{
@@ -64,28 +64,23 @@ export default {
         onSubmitRegister(){
             this.newuser.m_password = md5(this.password_normal);
             this.register_user = this.newuser
-            // console.log(this.newuser)
-            this.$store.dispatch("Register",this.register_user)
-            .then( response => { 
 
+            axios.post(this.$store.getters.getBase_Url+"User/save", JSON.stringify(this.register_user))
+            .then(response => {
+                // console.log(response.data)
                 setTimeout(() => {
-                    if(this.$store.state.statusRegister == 'fail'){
+                    if(response.data == 'fail'){
                         this.newuser.m_username =''
                         this.newuser.m_password ='' 
                         this.password_normal = ''  
                         // this.text_alert = 'username ซ้ำ ครับ'
                         this.$swal(" Username ซ้ำ ครับ  .", "", "error") 
-                     
                     }else{
-                        this.$router.push('/login')
+                        this.$router.push('/')
                         this.$swal("Register Success .", "", "success") 
                     }
-                }, 400)
-
-
-                 
+                }, 400) 
             })
-
                         
         },
         //

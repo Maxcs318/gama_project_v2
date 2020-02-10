@@ -14,7 +14,7 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitProduct">
               <center>
-                <img v-if="url" :src="url" max-width="250px" height="250px" />
+                <img v-if="url" :src="url" width="100%" />
               </center>
               <br />
               <center>
@@ -32,6 +32,7 @@
                 @change="handleFilesFirst"
               />
               <br />
+              ชื่อสินค้า
               <input
                 type="text"
                 v-model="product.p_name"
@@ -39,7 +40,19 @@
                 placeholder="ชื่อสินค้า"
                 required
               />
+              <br>
+              ประเภทสินค้า
+              <select v-model="product.p_category" class="form-control select" required>
+                <option class="option" selected disabled value>ประเภทสินค้า</option>
+                <option
+                  class="option"
+                  v-for="(pc,index) in product_category"
+                  :key="index"
+                  :value="pc.pc_id"
+                >{{ pc.pc_title }}</option>
+              </select>
               <br />
+              รายละเอียด
               <textarea
                 v-model="product.p_description"
                 class="form-control textarea"
@@ -49,49 +62,43 @@
               <br />
               <div class="row">
                 <div class="col-lg-6">
+                  ราคาปกติ
                   <input
                     type="text"
                     v-model="product.p_price"
                     class="form-control"
                     placeholder="ราคาปกติ"
+                    @keypress="isNumber($event)"
                     required
                   />
                 </div>
                 <div class="col-lg-6">
+                  ราคาสมาชิก
                   <input
                     type="text"
                     v-model="product.p_price2"
                     class="form-control"
                     placeholder="ราคาสมาชิก"
+                    @keypress="isNumber($event)"
                     required
                   />
                 </div>
               </div>
               <br />
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-lg-6">
                   <input
                     type="text"
                     v-model="product.p_quantity"
                     class="form-control"
                     placeholder="จำนวนสินค้า"
+                    @keypress="isNumber($event)"
                     required
                   />
                 </div>
-                <div class="col-lg-6">
-                  <select v-model="product.p_category" class="form-control select" required>
-                    <option class="option" selected disabled value>ประเภทสินค้า</option>
-                    <option
-                      class="option"
-                      v-for="(pc,index) in product_category"
-                      :key="index"
-                      :value="pc.pc_id"
-                    >{{ pc.pc_title }}</option>
-                  </select>
-                </div>
-              </div>
+              </div> -->
               <br />
-              <h5>Another Image [ {{files.length}} ] Size Files All [ {{max_size_file}} byte ]</h5>
+              <h5>รูปภาพอื่่นๆของ สินค้า [ {{files.length}} ] Size Files All [ {{max_size_file}} byte ]</h5>
               <input
                 type="file"
                 ref="files"
@@ -108,7 +115,7 @@
                   :key="index"
                   style="diaplay:block; margin-left:auto; margin-right:auto;"
                 >
-                  <img class="admin-img" :src="another_image_pre[index]" />
+                  <img class=" " :src="another_image_pre[index]" width="100%"/>
                   <h5></h5>
                   <b>{{index+1}}.</b>
                   {{files[index].name }}
@@ -144,6 +151,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -161,7 +169,10 @@ export default {
       another_image_pre: [],
       fileimage: "",
       files: [],
-      max_size_file: 0
+      max_size_file: 0,
+
+      data_product_category:'',
+      data_load_category:false,
     };
   },
   methods: {
@@ -230,11 +241,30 @@ export default {
       } else {
         this.$swal("Please Choose Image .", "", "error");
       }
-    }
+    },
+    // @keypress="isNumber($event)"
+    isNumber: function(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode != 9)) {
+            evt.preventDefault();
+        } else {
+            return true;
+        }
+    },
   },
   computed: {
     product_category() {
-      return this.$store.getters.getProduct_Category;
+      if(this.data_load_category==false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_all_product_category')
+        .then(response => {
+            // console.log(response.data)
+            this.data_product_category = response.data
+        })
+        this.data_load_category = true
+      }
+      var product_category_all = this.data_product_category
+      return product_category_all
     },
     the_user() {
       var user = this.$store.getters.getThe_User;

@@ -1,29 +1,30 @@
 <template>
   <div>
     <div class="container">
+      <h4><center> หนังสือ </center></h4> <br>
+      <div class="row">
+        <div class="col-lg-6 col-12"></div>
+        <div class="col-lg-6 col-12">
+            <input type="text" class="form-control" v-model="searching" placeholder="ค้นหา จากสินค้า ประเภทหนังสือ ทั้งหมด">
+            <p v-if="searching!=''" style="text-align: right;"> <br>
+            เจอทั้งหมด {{find}} รายการ
+            </p>    
+            <br>
+        </div>
+      </div>
       <div class="row">
         <div
           class="col-lg-3 col-6"
-          v-for="(product,index) in book.slice().reverse().slice((page*data_in_page),(page+1)*data_in_page)"
+          v-for="(product,index) in book"
           :key="index"
         >
-          <img
-            class="book-img"
+          <img width="100%"
+            class=""
             :src="getImgUrlProduct(product.p_image)"
             @click="seethisPage(product.p_id)"
           />
           <h5 class="book-name">{{product.p_name}}</h5>
           <p class="book-price">{{product.p_price}} ฿</p>
-
-          <!-- <div class="row">
-            <div class="col-lg-4">
-              <p class="book-price">{{product.p_price}} ฿</p>
-            </div>
-            <div class="col-lg-8 col-12">
-              <button class="form-control btn-primary">เพิ่มลงตะกร้า</button>
-              <br />
-            </div>
-          </div>-->
         </div>
       </div>
       <div class="row" v-if="length_page > 0">
@@ -56,15 +57,22 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
+      data_product:'',
+      data_size:'',
+      product_category:1,
+      data_load:false,
       page: 0,
       data_in_page: 12,
       length_page: 0,
       page_start: 0,
       page_end: 0,
-      isActive: []
+      isActive: [],
+      searching:'',
+      find:null
     };
   },
   methods: {
@@ -84,22 +92,32 @@ export default {
       });
     }
   },
+  watch:{
+      $route (to, from){
+        this.data_load = false;
+      },
+      searching(){
+        this.do_search
+      }
+    },
   computed: {
     book() {
-      var productAll = this.$store.getters.getProduct;
-      var book = [];
-      for (var i = 0; i < productAll.length; i++) {
-        if (productAll[i].p_category == 1) {
-          book.push(productAll[i]);
-        }
-      }
       var setpage = this.$route.params.Page;
+      var setcategory = this.product_category;
+      if(this.data_load==false && this.searching == ''){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/'+this.product_category+'/'+setpage)
+        .then(response => {
+        // console.log(response.data),
+        this.data_size = response.data[0],
+        this.data_product = response.data[1]
+        })
+        this.data_load = true
+      }
       var p_conpute = 2;
       var p_start = setpage;
       var p_end = Math.ceil(setpage / 1 + p_conpute);
-
       this.page = setpage - 1;
-      this.length_page = Math.ceil(book.length / this.data_in_page); // set page all
+      this.length_page = Math.ceil(this.data_size / this.data_in_page); // set page all
       // set start && end paging
       if (setpage > p_conpute) {
         p_start = setpage - p_conpute;
@@ -112,7 +130,6 @@ export default {
       }
       this.page_start = p_start;
       this.page_end = p_end;
-
       this.isActive = [];
       for (var i = 0; i <= this.length_page; i++) {
         if (i == this.$route.params.Page) {
@@ -121,14 +138,30 @@ export default {
           this.isActive.push(false);
         }
       }
-      return book;
+      return this.data_product;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
+    },
+    do_search(){
+      if(this.searching[0] == ' '){
+        this.searching = ''
+      }
+      if(this.searching.length>0){
+          var search = encodeURI(this.searching);
+          axios.get(this.$store.getters.getBase_Url+'Product/get_all_product_like/'+this.product_category+'/'+search)
+          .then(response => {
+            // console.log(response.data)
+            this.data_size = 0,
+            this.find = response.data[0],
+            this.data_product = response.data[1]
+        })
+        this.length_page = 0;
+      }else{
+        this.data_load = false;
+        this.find = null;
+      }
     }
-  },
-  created() {
-    this.$store.dispatch("initDataProduct");
   }
 };
 </script>

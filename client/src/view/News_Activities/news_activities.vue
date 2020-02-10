@@ -1,81 +1,22 @@
 <template>
   <div class="container">
-    <!-- <div class="row">
-      <div class="col-lg-6 col-12"> </div>
-      <div 
-        class="col-lg-6 col-12"
-        @click="seethisPage(news.n_id)"
-        v-for="(news,index) in the_news.slice().reverse().slice(0,1)"
-        :key="index"
-        >
-          <img class="img-activities2" :src="getImgUrl(news.n_image)" />
-          <h5 class="activitiesall-text2">{{news.n_title}}</h5>
-          <p class="activitiesall-date2">{{news.n_create_date.slice(0,-13)}}</p>
-      </div>
-    </div>-->
+    <h4 style="text-align:center"> ข่าว และ กิจกรรม </h4>
     <div class="row">
-      <!-- activities all pc-scale -->
-      <!-- <div class="activities-pc">
-        <div
-          class="col-lg-12 col-12"
-          style="padding-top: 70px;"
-          v-for="(news,index) in the_news.slice().reverse().slice(0,1)"
-          :key="index"
-        >
-          <div class="row">
-            <div class="col-lg-2">
-              <hr style="background: white" />
-            </div>
-            <div class="col-lg-4">
-              <h5 class="head">{{news.n_title}}</h5>
-              <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
-              <p class="date" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
-            </div>
-            <div class="col-lg-6">
-              <div class="shadow-news1"></div>
-              <div class="shadow-news2"></div>
-              <img
-                class="img-activities"
-                :src="getImgUrl(news.n_image)"
-                @click="seethisPage(news.n_id)"
-              />
-            </div>
-          </div>
-        </div>
-      </div>-->
-
-      <!-- activities all mb-scale -->
-      <!-- <div class="activities-mb">
-        <div
-          class="col-lg-12 col-12"
-          v-for="(news,index) in the_news.slice().reverse().slice(0,1)"
-          :key="index"
-        >
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="shadow-news1"></div>
-              <div class="shadow-news2"></div>
-              <img
-                class="img-activities"
-                :src="getImgUrl(news.n_image)"
-                @click="seethisPage(news.n_id)"
-              />
-            </div>
-            <div class="col-12">
-              <hr style="background: white" />
-            </div>
-            <div class="col-12">
-              <h5 class="head">{{news.n_title}}</h5>
-              <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
-              <p class="date" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
-            </div>
-          </div>
-        </div>
-      </div>-->
+      <div class="col-lg-6 col-12"></div>
+      <div class="col-lg-6 col-12">
+          <br>
+          <input type="text" class="form-control" v-model="searching" placeholder="ค้นหา จากข่าวและกิจกรรมทั้งหมด">
+          <p v-if="searching!=''" style="text-align: right;"> <br>
+          เจอทั้งหมด {{find}} รายการ
+          </p> 
+          <br>   
+      </div>
+    </div>
+    <div class="row">
       <div
         class="col-lg-6 col-12"
         @click="seethisPage(news.n_id)"
-        v-for="(news,index) in the_news.slice().reverse().slice((page*data_in_page),(page+1)*data_in_page)"
+        v-for="(news,index) in the_news"
         :key="index"
       >
         <img class="img-activities2" :src="getImgUrl(news.n_image)" />
@@ -107,15 +48,23 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
+      data_news:'',
+      data_size:'',
+      data_load:false,
       page: 0,
       data_in_page: 6,
       length_page: 0,
       page_start: 0,
       page_end: 0,
-      isActive: []
+      isActive: [],
+      
+      searching:'',
+      find:null,
+            
     };
   },
   methods: {
@@ -123,6 +72,7 @@ export default {
       return this.path_files + "News/" + pic;
     },
     seenextPage(num_page) {
+      this.data_load = false;
       this.$router.push({
         name: "newsandactivities",
         params: { Page: num_page }
@@ -135,16 +85,47 @@ export default {
       });
     }
   },
+  watch:{
+    $route (to, from){
+        this.data_load = false;
+    },
+    searching(){
+        if(this.searching[0] == ' '){
+            this.searching = ''
+        }
+        if(this.searching.length>0){
+            var search = encodeURI(this.searching);
+            axios.get(this.$store.getters.getBase_Url+'News/get_all_news_like/'+search)
+            .then(response => {
+                // console.log(response.data)
+                this.data_size = 0,
+                this.find = response.data[0],
+                this.data_news = response.data[1]
+            })
+            this.length_page = 0;
+        }else{
+            this.data_load = false;
+            this.find = null;
+        }
+    }
+  },
   computed: {
     the_news() {
       var setpage = this.$route.params.Page;
-      var news_All = this.$store.getters.getNews;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'News/get_news/'+this.data_in_page+'/'+setpage)
+        .then(response => {
+            // console.log(response.data),
+            this.data_size = response.data[0],
+            this.data_news = response.data[1]
+        })
+        this.data_load = true
+      }
       var p_conpute = 2;
       var p_start = setpage;
       var p_end = Math.ceil(setpage / 1 + p_conpute);
-
       this.page = setpage - 1;
-      this.length_page = Math.ceil(news_All.length / this.data_in_page); // set page all
+      this.length_page = Math.ceil(this.data_size / this.data_in_page); // set page all
       // set start && end paging
       if (setpage > p_conpute) {
         p_start = setpage - p_conpute;
@@ -157,7 +138,6 @@ export default {
       }
       this.page_start = p_start;
       this.page_end = p_end;
-
       this.isActive = [];
       for (var i = 0; i <= this.length_page; i++) {
         if (i == this.$route.params.Page) {
@@ -166,16 +146,12 @@ export default {
           this.isActive.push(false);
         }
       }
-      return news_All;
+      return this.data_news;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
   },
-  created() {
-    this.$store.dispatch("initDataNews");
-    this.$store.dispatch("initDataFiles");
-  }
 };
 </script>
 <style scoped>

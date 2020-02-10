@@ -15,6 +15,12 @@
             $files_upload_All = $this->db->get($this->files_upload)->result(); 
             return json_encode($files_upload_All);      
         }
+        // get file By key
+        public function get_file_by_key($key_file)
+        {
+            $result = $this->db->where('f_key',$key_file)->get($this->files_upload)->result();
+            return json_encode($result);        
+        }
         // insert Files_Upload
         public function insert_files_upload($data = array())
         {

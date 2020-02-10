@@ -22,6 +22,51 @@
         {
             echo $this->product_model->get_all_product();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get product
+        public function get_product($number_of_rows,$category,$pagenow)
+        {
+            echo $this->product_model->get_product($number_of_rows,$category,$pagenow);
+        }
+        // get this product
+        public function get_this_product($id)
+        {
+            $product = json_decode($this->product_model->get_this_product($id));
+            if(sizeof($product)==0){
+                $files_upload = false;
+            }else{
+                $key = $product[0]->p_image_key;
+                $files_upload = json_decode($this->product_model->get_image_by_product_id($key));
+            }
+            $product_and_files = json_encode([$product,$files_upload]);
+            echo $product_and_files;
+        }
+        // get all product like
+        public function get_all_product_like($category,$title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->product_model->get_all_product_like($category,$title_search);
+        }
+        //get random product
+        public function get_random_product($category,$pcs)
+        {
+            echo $this->product_model->get_random_product($category,$pcs);
+        }
+        //get product in cart
+        public function get_product_in_cart()
+        {
+            $data = json_decode($this->input->post('cart')) ;
+            echo $this->product_model->get_product_in_cart($data);
+        }
+        // get this product_category
+        public function get_this_product_category($id)
+        {
+            echo $this->product_model->get_this_product_category($id);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get all Product_Category
         public function get_all_product_category()
         {
@@ -232,6 +277,10 @@
             
         }
         // delete product 
+        public function check_product_and_order_item($id)
+        {
+            echo $this->product_model->check_product_and_order_item($id);
+        }
         public function delete_product()
         {
             // check status for delete
@@ -362,6 +411,10 @@
                 }
             }
         // delete product category
+        public function check_product_and_product_category($id)
+        {
+            echo $this->product_model->check_product_and_product_category($id);
+        }
         public function delete_product_category()
         {
             // check status for delete

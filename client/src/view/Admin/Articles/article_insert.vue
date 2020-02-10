@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="container" v-if="the_user">
+      <div class="container" v-if="the_user && the_user.m_status == 'admin'">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
             <center>
@@ -49,6 +49,14 @@
                   :value="ac.ac_id"
                 >{{ ac.ac_title }}</option>
               </select>
+              <br />
+              วิดีโอที่เกี่ยวข้อง
+              <input
+                type="text"
+                v-model="article.a_video_link"
+                class="form-control"
+                placeholder="วิดีโอ ที่เกี่ยวข้อง #หากไม่มีไม่ต้องใส่"
+              />
               <br />
               <textarea
                 v-model="article.a_detail"
@@ -112,6 +120,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -121,13 +130,17 @@ export default {
         a_detail: "",
         a_image: "",
         a_create_date: "",
-        a_file_key: ""
+        a_file_key: "",
+        a_video_link:""
       },
       url: null,
       fileimage: "",
       files: [],
       max_size_file: 0,
-      file_title: []
+      file_title: [],
+      data_load_category:false,
+      article_category_all:''
+
     };
   },
   methods: {
@@ -203,12 +216,21 @@ export default {
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     },
     article_category() {
-      return this.$store.getters.getArticle_Category;
+      if(this.data_load_category==false){
+        axios.get(this.$store.getters.getBase_Url+"Article/get_all_article_category")
+        .then(response => {
+            // console.log(response)
+            this.article_category_all = response.data
+        })
+        this.data_load_category=true
+      }
+        var category_all = this.article_category_all
+      return category_all
     }
   }
 };

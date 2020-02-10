@@ -8,7 +8,7 @@
         <div class="row">
           <div
             class="col-lg-3 col-6"
-            v-for="(gallery,index) in Gallery.slice().reverse().slice(0,4)"
+            v-for="(gallery,index) in Gallery"
             :key="index"
             @click="seethisGallery(gallery.g_id)"
           >
@@ -22,7 +22,17 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data() {
+    return {
+      data_in_page: 4,
+      data_gallery:'',
+      data_size:'',
+      data_load:false,
+      
+    };
+  },
   methods: {
     getImgUrlGallery(pic) {
       return this.path_files + "Gallery/" + pic;
@@ -39,12 +49,18 @@ export default {
       return this.$store.getters.getPath_Files;
     },
     Gallery() {
-      return this.$store.getters.getGallery;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Gallery/get_gallery/'+this.data_in_page+'/1')
+        .then(response => {
+            // console.log(response.data),
+            this.data_size = response.data[0],
+            this.data_gallery = response.data[1]
+        })
+        this.data_load = true
+      }
+      var gallery_show = this.data_gallery
+      return gallery_show
     }
-  },
-  created() {
-    this.$store.dispatch("initDataGallery");
-    this.$store.dispatch("initDataGallery_Image");
   }
 };
 </script>
@@ -100,9 +116,9 @@ export default {
   background: rgba(255, 255, 255, 0.131938);
   border-radius: 4px;
 }
-.shadow-block1:hover,
+/* .shadow-block1:hover,
 .shadow-block2:hover {
-}
+} */
 
 /* .shadow-block2 {
   position: absolute;

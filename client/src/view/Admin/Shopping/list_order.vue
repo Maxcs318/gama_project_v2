@@ -29,7 +29,7 @@
             <th></th>
           </tr>
           <tr
-            v-for="(order,index) in Order.slice((page*data_in_page),(page+1)*data_in_page) "
+            v-for="(order,index) in Order"
             :key="index"
           >
             <td>{{ index+1+(page*data_in_page) }}</td>
@@ -84,15 +84,25 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      page: 0,
-      data_in_page: 20,
-      length_page: 0,
-      page_start: 0,
-      page_end: 0,
-      isActive: []
+            data_order:'',
+            data_size:'',
+            data_load:false,
+            page: 0,
+            data_in_page: 20,
+            length_page: 0,
+            page_start: 0,
+            page_end: 0,
+            isActive: [],
+            
+            searching:'',
+            find:null,
+
+            data_load_order_status:false,
+            data_order_status:''
     };
   },
   methods: {
@@ -126,6 +136,9 @@ export default {
           // console.log('Confirm',this_order)
           this.$store.dispatch("Confirm_Order", FD);
           swal({ title: "Confirm Success.", icon: "success" });
+          setTimeout(() => {
+            this.data_load=false
+          },100);
         }
       });
     },
@@ -144,26 +157,44 @@ export default {
           // console.log('Discard',this_order)
           this.$store.dispatch("Discard_Order", FD);
           swal({ title: "Discard Success.", icon: "success" });
+          setTimeout(() => {
+            this.data_load=false
+          },100);
         }
       });
     }
   },
+  watch:{
+      $route (to, from){
+          this.data_load = false;
+      },
+      the_user(){
+          this.data_load = false;
+          this.searching = ''
+      }
+  },
   computed: {
     Order() {
-      var order_for_admin = this.$store.getters.getOrder_For_Admin;
-      var order_s2 = [];
-      for (var i = 0; i < order_for_admin.length; i++) {
-        if (order_for_admin[i].o_status_id == 2) {
-          order_s2.push(order_for_admin[i]);
-        }
-      }
       var setpage = this.$route.params.Page;
+      if(this.data_load==false && this.data_in_page){
+          var FD = new FormData();
+          FD.append("number_of_row", JSON.stringify(this.data_in_page));
+          FD.append("pagenow", JSON.stringify(setpage));
+          FD.append("order_status_id", JSON.stringify(2));
+
+          axios.post(this.$store.getters.getBase_Url+'Order/get_order_for_admin',FD)
+          .then(response => {
+              // console.log(response.data)
+              this.data_size = response.data[0],
+              this.data_order = response.data[1]
+          })
+          this.data_load = true
+      }
       var p_conpute = 2;
       var p_start = setpage;
       var p_end = Math.ceil(setpage / 1 + p_conpute);
-
       this.page = setpage - 1;
-      this.length_page = Math.ceil(order_s2.length / this.data_in_page); // set page all
+      this.length_page = Math.ceil(this.data_size / this.data_in_page); // set page all
       // set start && end paging
       if (setpage > p_conpute) {
         p_start = setpage - p_conpute;
@@ -176,7 +207,6 @@ export default {
       }
       this.page_start = p_start;
       this.page_end = p_end;
-
       this.isActive = [];
       for (var i = 0; i <= this.length_page; i++) {
         if (i == this.$route.params.Page) {
@@ -185,10 +215,19 @@ export default {
           this.isActive.push(false);
         }
       }
-      return order_s2;
+      return this.data_order;
     },
     Order_Status() {
-      return this.$store.getters.getOrder_Status;
+      if(this.data_load_order_status==false){
+          axios.get(this.$store.getters.getBase_Url+'Order/get_all_order_status')
+          .then(response => {
+              // console.log(response.data)
+              this.data_order_status = response.data
+          })
+          this.data_load_order_status = true
+      }
+      var order_status_all = this.data_order_status
+      return order_status_all
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
@@ -197,11 +236,6 @@ export default {
       }
       return user;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataOrders");
-    this.$store.dispatch("initDataOrder_Items");
-    this.$store.dispatch("initDataOrder_Status");
   }
 };
 </script>

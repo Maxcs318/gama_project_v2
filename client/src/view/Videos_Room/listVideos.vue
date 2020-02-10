@@ -1,8 +1,8 @@
 <template>
-    <div class="container ">
-        <h4>List Videos</h4>
+    <div class="container " v-if="ListVideos">
+        <h4><center> {{data_video_room[0].vr_title}} </center></h4>
         <div class="row">
-            <div class="col-lg-12 col-xs-12" v-for="( listv,index ) in ListVideos" :key="index">
+            <div class="col-lg-12 col-xs-12" v-for="( listv,index ) in data_videos" :key="index">
                 <div @click="seethisVideo(listv.v_id)">
                     Video Name: <b> {{listv.v_title}} </b> <br>
                     Description: {{listv.v_description}}
@@ -13,22 +13,39 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+    data(){
+        return{
+            data_video_room:'',
+            data_videos:'',
+            data_load:false,
+        }
+    },
     methods:{
         seethisVideo(thisvideo){
             this.$router.push({name:'roomvideo',params:{VideoID:thisvideo}});
         }
     },
+    watch:{
+        $route (to, from){
+            this.data_load = false;
+        },
+    },
     computed:{
         ListVideos(){
-            var listvideosAll = this.$store.getters.getVideos
-            var listvideos = []
-            for(var i=0; i<listvideosAll.length; i++ ){
-                if( listvideosAll[i].v_room == this.$route.params.RoomID ){
-                    listvideos.push(listvideosAll[i])
-                }
+            var roomID = this.$route.params.RoomID
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+'Videos_room/get_this_video_room/'+roomID)
+                .then(response => {
+                    // console.log(response.data[0]),
+                    this.data_video_room = response.data[0],
+                    this.data_videos= response.data[1]
+                })
+                this.data_load = true
             }
-            return listvideos
+            var video = this.data_video_room
+            return video
         }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="margin-top: 109px">
+  <div class="container" style="margin-top: 25px">
     <div class="row">
       <div class="col-lg-12 col-xs-12">
         <h5 class="head">หลักสูตรและอบรมอื่น ๆ ที่หน้าสนใจ</h5>
@@ -9,7 +9,7 @@
     <div class="row">
       <div
         class="col-lg-4 col-12"
-        v-for="(product,index) in trainingC.slice().reverse().slice(0,3)"
+        v-for="(product,index) in trainingC"
         :key="index"
       >
         <img
@@ -18,8 +18,8 @@
           height="230px"
           @click="seethisPage(product.p_id)"
         />
-        <h5 class="course-name2">{{product.p_name.slice(0,40)+"..."}}</h5>
-        <p class="course-date2">{{product.p_create_date.slice(0,-13)}}</p>
+        <h5 class="course-name2"  @click="seethisPage(product.p_id)">{{product.p_name.slice(0,40)+"..."}}</h5>
+        <p class="course-date2"  @click="seethisPage(product.p_id)">{{product.p_create_date.slice(0,-13)}}</p>
         <br />
         <br />
         <br />
@@ -28,7 +28,16 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data(){
+    return{
+      data_pcs:3,
+      product_category:2,
+      data_product:'',
+      data_load:false
+    }
+  },
   methods: {
     getImgUrl(pic) {
       return this.path_files + "Product/" + pic;
@@ -40,23 +49,27 @@ export default {
       });
     }
   },
+  watch:{
+    $route (to, from){
+      this.data_load = false;
+    },
+  },
   computed: {
     trainingC() {
-      var productAll = this.$store.getters.getProduct;
-      var training_course = [];
-      for (var i = 0; i < productAll.length; i++) {
-        if (productAll[i].p_category == 2) {
-          training_course.push(productAll[i]);
-        }
+      if(this.data_load == false){
+        axios.get(this.$store.getters.getBase_Url+'Product/get_random_product/'+this.product_category+'/'+this.data_pcs)
+        .then(response => {
+          this.data_product = response.data
+        })
+          this.data_load = true
       }
-      return training_course;
+      
+        var training = this.data_product
+      return training;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
     }
-  },
-  created() {
-    this.$store.dispatch("initDataProduct");
   }
 };
 </script>

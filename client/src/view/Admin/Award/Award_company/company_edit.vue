@@ -28,10 +28,12 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      company: []
+      data_load:false,
+      company:''
     };
   },
   methods: {
@@ -56,15 +58,17 @@ export default {
       return user;
     },
     thisCompany() {
-      var companyAll = this.$store.getters.getCompany;
-      var this_company;
-      for (var i = 0; i < companyAll.length; i++) {
-        if (companyAll[i].c_id == this.$route.params.CompanyID) {
-          this_company = companyAll[i];
-        }
+      var company_id = this.$route.params.CompanyID
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Award/get_this_company/'+company_id)
+        .then(response => {
+          // console.log(response.data[0])
+          this.company = response.data[0]
+        })
+        this.data_load = true
       }
-      this.company = this_company;
-      return this_company;
+      var this_company = this.company
+      return this_company
     }
   }
 };

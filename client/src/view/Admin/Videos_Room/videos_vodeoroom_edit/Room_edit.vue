@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-xs-6"></div>
                         <div class="col-lg-6 col-xs-6">
-                            <button class="form-control btn-primary" type="submit">ดำเนินการต่อ</button>
+                            <button class="form-control btn-primary" type="submit">ดำเนินการต่อ</button> <br>
                         </div>
                     </div>
                 </form>
@@ -24,10 +24,15 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     data(){
         return{
-            videoroom:''
+            videoroom:'',
+
+            data_video_room:'',
+            data_videos:'',
+            data_load:false,
         }
     },
     methods:{
@@ -46,20 +51,24 @@ export default {
     },
     computed : {
         thisVideo_Room(){
-            var video_roomall = this.$store.getters.getVideo_Room
-            var video_room
-            for(var i=0; i<video_roomall.length; i++){
-                if(video_roomall[i].vr_id == this.$route.params.RoomID){
-                    video_room = video_roomall[i]
-                }
+            var roomID = this.$route.params.RoomID
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+'Videos_room/get_this_video_room/'+roomID)
+                .then(response => {
+                    // console.log(response.data)
+                    this.data_video_room = response.data[0][0]
+                    // this.data_videos= response.data[1]
+                })
+                this.data_load = true
             }
-            this.videoroom = video_room 
-            return video_room
+            this.videoroom = this.data_video_room
+            var room_video_now = this.data_video_room
+            return room_video_now
         },
         the_user(){
             var user = this.$store.getters.getThe_User
             if( user.m_status != 'admin' ){
-                this.$router.go(-1)
+                // this.$router.go(-1)
             }
             return user
         }

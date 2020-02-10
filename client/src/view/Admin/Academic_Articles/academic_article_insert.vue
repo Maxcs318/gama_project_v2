@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="container" v-if="the_user">
+      <div class="container" v-if="the_user && the_user.m_status == 'admin' ">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
             <h4 class="header">
@@ -14,7 +14,7 @@
           <div class="col-lg-6 col-xs-12">
             <form @submit.prevent="submitArticle">
               <center>
-                <img class="admin-img" v-if="url" :src="url" />
+                <img class=" " v-if="url" :src="url" width="100%" />
               </center>
               <br />
               <button
@@ -114,6 +114,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -129,7 +130,10 @@ export default {
       fileimage: "",
       files: [],
       max_size_file: 0,
-      file_title: []
+      file_title: [],
+
+      data_load_category:false,
+      academic_article_category_all:''
     };
   },
   methods: {
@@ -205,12 +209,21 @@ export default {
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     },
     academic_article_category() {
-      return this.$store.getters.getAcademic_Article_Category;
+      if(this.data_load_category==false){
+        axios.get(this.$store.getters.getBase_Url+"Academic_article/get_all_academic_article_category")
+        .then(response => {
+            // console.log(response.data)
+            this.academic_article_category_all = response.data
+        })
+        this.data_load_category=true
+      }
+        var category_all = this.academic_article_category_all
+      return category_all
     }
   }
 };

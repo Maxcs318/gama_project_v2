@@ -23,6 +23,37 @@
         {
             echo $this->research_model->get_all_research();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get research
+        public function get_research($number_of_rows,$permission,$pagenow)
+        {
+            echo $this->research_model->get_research($number_of_rows,$permission,$pagenow);
+        }
+        // get this new
+        public function get_this_research($permission,$id)
+        {
+            $research = json_decode($this->research_model->get_this_research($permission,$id));
+            if(sizeof($research)==0){
+                $files_upload = false;
+            }else{
+                $key = $research[0]->r_file_key;
+                $files_upload = json_decode($this->Files_Upload_model->get_file_by_key($key));
+            }
+            $research_and_files = json_encode([$research,$files_upload]);
+            echo $research_and_files;
+        }
+        // get all research like
+        public function get_all_research_like($permission,$title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->research_model->get_all_research_like($permission,$title_search);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+        
+
         // insert Research
         public function insert_research()
         {

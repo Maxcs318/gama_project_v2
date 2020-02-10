@@ -24,6 +24,22 @@
             
             return json_encode($data);
         }
+        //////////////////////////////////////////////////////////////////////////////////
+
+        // get my shipping address
+        public function get_my_shipping_address($id)
+        {
+            $this->db->order_by('sa_id', 'DESC');
+            $result = $this->db->where('sa_member_id',$id)->get($this->shipping_address)->result();
+            return json_encode($result);
+        }
+        //  shipping_address_in_order
+        public function shipping_address_in_order($shipping_address_id)
+        {
+            $result = $this->db->where('sa_id',$shipping_address_id)->get($this->shipping_address)->result();
+            return json_encode($result[0]);
+        }
+        //////////////////////////////////////////////////////////////////////////////////
 
 
 

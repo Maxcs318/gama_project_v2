@@ -39,7 +39,14 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  data(){
+    return{
+      data_load:false,
+      data_company:''
+    }
+  },
   methods: {
     addcompany() {
       this.$router.push("/addcompany");
@@ -65,6 +72,9 @@ export default {
         if (willDelete) {
           this.$store.dispatch("Delete_Company", FD);
           swal({ title: "Delete Success.", icon: "success" });
+          setTimeout(() => {
+            this.data_load=false
+          },100);
           // console.log(FD)
         } else {
           // swal("Your imaginary file is safe!");
@@ -72,7 +82,7 @@ export default {
       });
     }
   },
-  computed: {
+  computed:{
     the_user() {
       var user = this.$store.getters.getThe_User;
       // if( user.m_status != 'admin' ){
@@ -82,11 +92,17 @@ export default {
       return user;
     },
     Company() {
-      return this.$store.getters.getCompany;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+"Award/get_all_company")
+        .then(response => {
+          // console.log(response)
+          this.data_company = response.data
+        })
+      this.data_load = true
+      }
+      var company_all = this.data_company
+      return company_all
     }
-  },
-  created() {
-    this.$store.dispatch("initDataCompany");
   }
 };
 </script>

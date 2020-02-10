@@ -33,7 +33,7 @@
               v-model="addVideos[index].v_link"
               type="text"
               class="form-control"
-              placeholder="Video Name"
+              placeholder="Example -> https://www.youtube.com/embed/KRaWnd3LJfs"
               required
             />
             <br />
@@ -61,10 +61,10 @@
           </div>
           <div class="row">
             <div class="col-lg-6 col-xs-6">
-              <button class="form-control btn-success" type="button" @click="btn_addmore">เพิ่ม</button>
+              <button class="form-control btn-success" type="button" @click="btn_addmore">เพิ่ม จำนวนวิดีโออีก</button> <br>
             </div>
             <div class="col-lg-6 col-xs-6">
-              <button class="form-control btn-primary" type="submit">ดำเนินการต่อ</button>
+              <button class="form-control btn-primary" type="submit">ดำเนินการต่อ</button> <br>
             </div>
           </div>
         </form>
@@ -74,6 +74,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -86,7 +87,10 @@ export default {
           v_room: "",
           v_create_date: ""
         }
-      ]
+      ],
+      data_video_room:'',
+      data_size:'',
+      data_load:false,
     };
   },
   methods: {
@@ -119,13 +123,22 @@ export default {
     }
   },
   computed: {
-    ListRoom() {
-      return this.$store.getters.getVideo_Room;
+    ListRoom() { //Videos_Room/get_all_video_room
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Videos_room/get_all_video_room')
+        .then(response => {
+            // console.log(response.data)
+            this.data_video_room = response.data
+        })
+        this.data_load = true
+      }
+      var list_room_all = this.data_video_room
+      return list_room_all
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     }

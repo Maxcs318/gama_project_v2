@@ -1,28 +1,20 @@
 <template>
 <div>
-  {{date_now}}
+   <center> <h4> TEST 01 </h4> </center>
 </div>
 </template>
 <script>
-import logintest from "./../components/Login_Register/loginPage";
-// Get the modal
-// var modal = document.getElementById("id01");
+import axios from "axios"
 export default {
-  components: {
-    login: logintest
+  data(){
+    return{
+      
+    }
   },
   methods: {
-    PopupLogin() {
-      document.getElementById("id02").style.display = "block";
-    }
+    
   },
-  computed:{
-    date_now(){
-      var today = new Date();
-      var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+' '+today.getHours() + ":" + today.getMinutes();
-      return date
-    }
-  }
+  
 };
 
 </script>

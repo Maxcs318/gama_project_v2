@@ -23,16 +23,40 @@
         {
             echo $this->news_model->get_all_news();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // get news
-        public function get_news($pagenow)
+        public function get_news($number_of_rows,$pagenow)
         {
-            echo $this->news_model->get_news($pagenow);
+            echo $this->news_model->get_news($number_of_rows,$pagenow);
         }
         // get this new
         public function get_this_news($id)
         {
-            echo $this->news_model->get_this_news($id);
+            $news = json_decode($this->news_model->get_this_news($id));
+            if(sizeof($news)==0){
+                $files_upload = false;
+            }else{
+                $key = $news[0]->n_file_key;
+                $files_upload = json_decode($this->Files_Upload_model->get_file_by_key($key));
+            }
+            $news_and_files = json_encode([$news,$files_upload]);
+            echo $news_and_files;
         }
+        // get all news like
+        public function get_all_news_like($title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->news_model->get_all_news_like($title_search);
+        }
+        //get random news
+        public function get_random_news($pcs)
+        {
+            echo $this->news_model->get_random_news($pcs);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////
+        
         // insert News
         public function insert_news()
         {

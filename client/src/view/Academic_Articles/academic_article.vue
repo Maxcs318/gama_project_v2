@@ -2,13 +2,13 @@
   <div class="container">
     <div class="row" style="padding-top: 70px;">
       <div class="col-lg-2 col-xs-12"></div>
-      <div class="col-lg-8 col-xs-12" v-if="thisAcademic_Article != null">
+      <div class="col-lg-8 col-xs-12" v-if="thisAcademic_Article">
         <img :src="getImgUrl(thisAcademic_Article.aa_image)" width="100%" />
         <h5 class="head">{{thisAcademic_Article.aa_title}}</h5>
-        <p class="date">{{thisAcademic_Article.aa_create_date.slice(0,-13)}}</p>
-        <p > ประเภท : {{thisAcademic_Article.aa_category}}</p>
+        <p class="date" style="text-align:right">{{thisAcademic_Article.aa_create_date}}</p>
+        <!-- <p style="text-align:right"> ประเภท : {{thisAcademic_Article.aa_category}}</p> -->
         <p class="detail">{{thisAcademic_Article.aa_detail}}</p>
-        <div v-if="thisFiles != null" v-for="(file,index) in thisFiles" :key="index">
+        <div v-if="academic_article_data_file != null" v-for="(file,index) in academic_article_data_file" :key="index">
           <a :href="loadFile(file.f_name)" class="btn" download>
             <i class="fa fa-download"></i>&nbsp; Download File :
           </a>
@@ -16,11 +16,13 @@
           <br />
         </div>
       </div>
+      <div class="col-lg-8 col-12" v-else><center> <h2> {{text_alert}} </h2> </center> <br><br> </div>
       <div class="col-lg-2 col-xs-12"></div>
     </div>
 
-    <div class="article2">
-      <div class="row">
+     <div class="article2">
+       <a-a-interesting></a-a-interesting>
+      <!--<div class="row">
         <div class="col-lg-6 col-12" v-for="article in Academic_Article_all.slice().reverse().slice(0,2)">
           <div>
             <img
@@ -30,16 +32,30 @@
               height="360px"
               @click="seethisPageArticle(article.aa_id)"
             />
-            <h5 class="article-title" @click="seethisPageNews(article.aa_id)">{{article.aa_title}}</h5>
+            <h5 class="article-title" @click="seethisPageArticle(article.aa_id)">{{article.aa_title}}</h5>
             <p class="article-date" style="text-align: left;">{{article.aa_create_date}}</p>
           </div>
         </div>
-      </div>
-    </div>
+      </div>-->
+    </div> 
   </div>
 </template>
 <script>
+import axios from "axios";
+import academicarticleinteresting from "./../../components/Other_interesting/academic_article_interesting";
+
 export default {
+  data(){
+    return {
+      data_load:false,
+      text_alert:'',
+      academic_article_data:'',
+      academic_article_data_file:''
+    }
+  },
+  components: {
+    AAInteresting: academicarticleinteresting,
+  },
   methods: {
     getImgUrl(pic) {
       return this.path_files + "Academic_Article/" + pic;
@@ -55,32 +71,24 @@ export default {
     path_files() {
       return this.$store.getters.getPath_Files;
     },
-    Academic_Article_all() {
-      return this.$store.getters.getAcademic_Article_Set_Category;
-    },
     thisAcademic_Article() {
-      var articleAll = this.$store.getters.getAcademic_Article_Set_Category;
-      var article = null;
-      for (var i = 0; i < articleAll.length; i++) {
-        if (articleAll[i].aa_id == this.$route.params.AcademicArticleID) {
-          article = articleAll[i];
+      var academic_articleID = this.$route.params.AcademicArticleID;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Academic_article/get_this_academic_article/'+academic_articleID)
+        .then(response => {
+            // console.log(response.data),
+            this.academic_article_data = response.data[0][0],
+            this.academic_article_data_file = response.data[1]
+        })
+        this.data_load = true
+        if(this.academic_article_data.length == 0){
+          setTimeout(() => {
+            this.text_alert = 'This Page No Data.'
+          },1000);
         }
       }
-      return article;
-    },
-    thisFiles() {
-      var filesAll = this.$store.getters.getFiles;
-      var files_article = [];
-      for (var i = 0; i < filesAll.length; i++) {
-        if (filesAll[i].f_key == this.thisAcademic_Article.aa_file_key) {
-          files_article.push(filesAll[i]);
-        }
-      }
-      if (files_article.length != 0) {
-        return files_article;
-      } else {
-        return false;
-      }
+      var academic_article_show = this.academic_article_data
+      return academic_article_show;
     }
   }
 };

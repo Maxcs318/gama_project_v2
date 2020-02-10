@@ -24,6 +24,59 @@
         {
             echo $this->user_model->get_all_datamember();
         }
+        //////////////////////////////////////////////////////////////////////////////////
+
+        // check_user_already
+        public function check_user_already()
+        {
+            $username = json_decode($this->input->post('username'));
+            $id = json_decode($this->input->post('id'));
+
+            $chk_username = json_decode($this->user_model->check_user_already($username));
+
+            if($chk_username == 'YES'){
+                $text_alert = $chk_username;
+            }else{
+                if($chk_username->m_id == $id){
+                    $text_alert = 'YES';
+                }else{
+                    $text_alert = 'NO';
+                }
+            }
+            echo json_encode($text_alert);
+
+        }
+        // get_member_type_by_id
+        public function get_member_type_by_id($member_type_id)
+        {
+            echo $this->user_model->get_member_type_by_id($member_type_id);
+        }
+        // get_member_type_by_id
+        public function get_member_upgrade_date_by_id($member_upgrade_date_id)
+        {
+            echo $this->user_model->get_member_upgrade_date_by_id($member_upgrade_date_id);
+        }
+        // get_member_all_by_admin
+        public function get_member_all_by_admin()
+        {
+            $number_of_row = json_decode($this->input->post('number_of_row'));
+            $pagenow = json_decode($this->input->post('pagenow'));
+            
+            echo $this->user_model->get_member_all_by_admin($number_of_row,$pagenow);
+        }
+        // get_this_member
+        public function get_this_member($id)
+        {
+            echo $this->user_model->get_this_member($id);
+        }
+        // get_all_username_like
+        public function get_all_username_like($title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->user_model->get_all_username_like($title_search);
+        }
+        //////////////////////////////////////////////////////////////////////////////////
+
         // member type
         public function get_all_member_type()
         {

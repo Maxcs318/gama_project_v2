@@ -33,10 +33,15 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     data() {
         return {
-            
+            data_load:false,
+            data_article_category:'',
+
+            data_check_article_category:0,
+            check_article_category:null
         };
     },
     methods:{
@@ -48,24 +53,41 @@ export default {
         },
         deleteArticle_Category(this_article){
             // console.log(this_article)
-            var FD  = new FormData()
-            FD.append('article_categoryID',JSON.stringify(this_article))
-            FD.append('creator',JSON.stringify(this.$store.state.log_on))
-            this.$swal({
-                title: "Are you sure?",
-                text: "You want delete this Article Category ID "+this_article,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+            axios.get(this.$store.getters.getBase_Url+'Article/check_article_and_article_category/'+this_article)
+            .then(response => {
+                // console.log(response.data)
+                this.data_check_article_category = response.data,   
+                this.check_article_category = 'success'
             })
-            .then((willDelete) => {
-                if (willDelete) {
-                    this.$store.dispatch("Delete_Article_Category",FD)
-                    swal({title: "Delete Success.",icon: "success",});
-                } else {
-                    // swal("Your imaginary file is safe!");
+            setTimeout(() => {
+                if(this.data_check_article_category == 0 && this.check_article_category == 'success'){
+                    var FD  = new FormData()
+                    FD.append('article_categoryID',JSON.stringify(this_article))
+                    FD.append('creator',JSON.stringify(this.$store.state.log_on))
+                    this.$swal({
+                        title: "Are you sure?",
+                        text: "You want delete this Article Category ID "+this_article,
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            this.$store.dispatch("Delete_Article_Category",FD)
+                            swal({title: "Delete Success.",icon: "success",});
+                            setTimeout(() => {
+                                this.data_load=false
+                            },100);
+                        } else {
+                            // swal("Your imaginary file is safe!");
+                        }
+                    })
+                }else{
+                    swal({title: "ประเภทบทความนี้ ไม่สามารถลบได้",text: "เนื่องจากมี บทความ บางรายการใช้ประเภทบทความนี้อยู่",icon: "warning",});
                 }
-            })
+            },100);
+            this.data_check_article_category = 0   
+            this.check_article_category = null
         }
     },
     computed:{
@@ -77,11 +99,17 @@ export default {
             return user
         },
         article_category(){
-            return this.$store.getters.getArticle_Category
+            if(this.data_load==false){
+                axios.get(this.$store.getters.getBase_Url+"Article/get_all_article_category")
+                .then(response => {
+                    // console.log(response)
+                    this.data_article_category = response.data
+                })
+                this.data_load=true
+            }
+            var category_all = this.data_article_category
+            return category_all
         }
-    },
-    created(){
-        this.$store.dispatch("initDataArticle_Category");
     }
 }
 </script>

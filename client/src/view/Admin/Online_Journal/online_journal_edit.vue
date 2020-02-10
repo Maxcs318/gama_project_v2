@@ -47,13 +47,13 @@
             </div>
           </div>
           <br />
-          <div v-if="thisFiles != null" v-for="(file,run) in thisFiles">
+          <div v-if="online_journal_data_file != null" v-for="(file,run) in online_journal_data_file">
             <a :href="loadFile(file.f_name)" download>Dowload File {{run+1}}</a>
             {{file.f_title}}
             <button
               type="button"
               class="btn btn-danger col-lg-1"
-              @click="RemoveFile(file.f_id)"
+              @click="RemoveFile(file.f_id,file.f_title)"
             >ลบ</button>
             <br />
             <br />
@@ -111,13 +111,24 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       online_journalE: "",
       file_title: [],
       files: [],
-      max_size_file: 0
+      max_size_file: 0,
+
+      text_alert:'',
+      mem_type_all:'',
+      data_load:false,
+
+      online_journal_data:'',
+      online_journal_data_file:'',
+      data_load_oj:false,
+
+      check_delete_file:false
     };
   },
   methods: {
@@ -151,11 +162,32 @@ export default {
       this.file_title.splice(index, 1);
     },
     //delete file
-    RemoveFile: function(fileID) {
+    RemoveFile: function(fileID,fileName) {
+      
       var FD_delete = new FormData();
       FD_delete.append("fileID", fileID);
       FD_delete.append("creator", JSON.stringify(this.$store.state.log_on));
-      this.$store.dispatch("Delete_File", FD_delete);
+      
+      this.$swal({
+          title: "Are you sure?",
+          text: "You want delete this Filse Name "+fileName,
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+          this.$store.dispatch("Delete_File", FD_delete);
+          setTimeout(() => {
+            this.check_delete_file=true
+            this.data_load_oj=false
+          },100);
+          swal({title: "Delete Success.",icon: "success",});
+        } else {
+          //
+        }
+      })
+
     },
     //submit
     submitOnline_Journal() {
@@ -180,44 +212,64 @@ export default {
       this.$swal("Edit Online_Journal Success .", "", "success");
     }
   },
+  watch:{
+    $route (to, from){
+      this.data_load = false;
+    }
+  },
   computed: {
     path_files() {
       return this.$store.getters.getPath_Files;
     },
     thisOnline_Journal() {
-      var online_journalAll = this.$store.getters.getOnline_Journal;
-      var online_journal;
-      for (var i = 0; i < online_journalAll.length; i++) {
-        if (online_journalAll[i].oj_id == this.$route.params.Online_JournalID) {
-          online_journal = online_journalAll[i];
+      var online_j_ID = this.$route.params.Online_JournalID;
+      var permission = this.the_user.m_type; //permission
+      if(this.the_user == '' || this.the_user == undefined || this.the_user == null){
+          permission = 0;
+      }
+      if(this.the_user.m_status == 'admin'){
+        permission = 9;
+      }
+      if(this.data_load_oj == false && permission){
+        axios.get(this.$store.getters.getBase_Url+'Online_journal/get_this_online_journal/'+permission+'/'+online_j_ID)
+        .then(response => {
+            // console.log(response.data)
+            this.online_journal_data = response.data[0][0],
+            this.online_journal_data_file = response.data[1]
+        })
+        this.data_load_oj = true
+        if(this.online_journal_data.length == 0){
+            setTimeout(() => {
+                this.text_alert = 'This Page No Data.'
+            },1000);
         }
       }
-      this.online_journalE = online_journal;
-      return online_journal;
-    },
-    thisFiles() {
-      var filesAll = this.$store.getters.getFiles;
-      var files_online_journal = [];
-      for (var i = 0; i < filesAll.length; i++) {
-        if (filesAll[i].f_key == this.thisOnline_Journal.oj_file_key) {
-          files_online_journal.push(filesAll[i]);
-        }
+
+      if(this.check_delete_file == false){
+        this.online_journalE = this.online_journal_data
       }
-      if (files_online_journal.length != 0) {
-        return files_online_journal;
-      } else {
-        return null;
-      }
+      
+      var online_journal_show = this.online_journal_data
+      return online_journal_show;
     },
     the_user() {
       var user = this.$store.getters.getThe_User;
       if (user.m_status != "admin") {
-        this.$router.go(-1);
+        // this.$router.go(-1);
       }
       return user;
     },
     Member_Type() {
-      return this.$store.getters.getMember_Type;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'User/get_all_member_type')
+        .then(response => {
+            // console.log(response.data) 
+            this.mem_type_all = response.data
+        })
+        this.data_load = true
+      }
+      var member_type_all = this.mem_type_all
+      return member_type_all
     }
   }
 };

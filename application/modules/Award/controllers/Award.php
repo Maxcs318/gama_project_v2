@@ -22,6 +22,44 @@
         {
             echo $this->Award_model->get_all_award_list();
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // get award
+        public function get_award($number_of_rows,$type,$year,$pagenow)
+        {
+            echo $this->Award_model->get_award($number_of_rows,$type,$year,$pagenow);
+        }
+        // get this award
+        public function get_this_award($id)
+        {
+            echo $award = $this->Award_model->get_this_award($id);
+        }
+        // get all award like
+        public function get_all_award_like($type,$year,$title_search)
+        {
+            $title_search = urldecode($title_search);
+            echo $this->Award_model->get_all_award_like($type,$year,$title_search);
+        }
+
+        // get this company
+        public function get_this_company($id)
+        {
+            echo $award = $this->Award_model->get_this_company($id);
+        }
+        // get this award_type
+        public function get_this_award_type($id)
+        {
+            echo $award = $this->Award_model->get_this_award_type($id);
+        }
+        // get this award_year
+        public function get_this_award_year($id)
+        {
+            echo $award = $this->Award_model->get_this_award_year($id);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+
         // insert_award_list
         public function insert_award_list()
         {

@@ -1,10 +1,29 @@
 <template>
   <div class="container">
-    <h4>บทความวิชาการ</h4>
+    <h4 style="text-align:center">บทความวิชาการ </h4>
+    <div class="row">
+      <div class="col-lg-6 col-12">
+        <br>
+        <select class="form-control select" v-model="academic_article_category" required @click="changeCategory(academic_article_category)">
+          <option class="option" value="all" > ทั้งหมด </option>
+          <option class="option" v-for="aac in Academic_Article_Category" :value="aac.aac_id">
+            {{ aac.aac_title }}
+          </option>
+        </select>
+      </div>
+      <div class="col-lg-6 col-12">
+        <br>
+        <input type="text" class="form-control" v-model="searching" placeholder="ค้นหา จากบทความวิชาการทั้งหมด">
+        <p v-if="searching!=''" style="text-align: right;"> <br>
+         เจอทั้งหมด {{find}} รายการ
+        </p>    
+      </div>
+    </div>
+    <br>
     <div class="row">
       <div
         class="col-lg-6 col-12"
-        v-for="(academic_article,index) in the_academic_article.slice().reverse().slice((page*data_in_page),(page+1)*data_in_page)"
+        v-for="(academic_article,index) in the_academic_article"
         :key="index"
         @click="seethisPage(academic_article.aa_id)"
         style="margin-bottom: 32px;"
@@ -33,15 +52,25 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
+      data_academic_articles:'',
+      data_size:'',
+      academic_article_category:'',
+      data_load:false,
       page: 0,
       data_in_page: 6,
       length_page: 0,
       page_start: 0,
       page_end: 0,
-      isActive: []
+      isActive: [],
+      searching:'',
+      find:null,
+
+      academic_article_category_all:'',
+      data_load_category:false,
     };
   },
   methods: {
@@ -54,20 +83,62 @@ export default {
         params: { Page: num_page }
       });
     },
+    changeCategory(selected_category){
+      if(this.academic_article_category != this.$route.params.AcademicArticleCategory ){
+        this.searching=""
+        this.$router.push({
+          name: "academic_articles",
+          params: { AcademicArticleCategory: selected_category,Page: 1 }
+        });
+      }
+    },
     seethisPage(thisarticle) {
       this.$router.push({name: "academic_article",params: { AcademicArticleID: thisarticle }});
+    }
+  },
+  watch:{
+    $route (to, from){
+        this.data_load = false;
+    },
+    searching(){
+      if(this.searching[0] == ' '){
+        this.searching = ''
+      }
+      if(this.searching.length>0){
+        var search = encodeURI(this.searching);
+        axios.get(this.$store.getters.getBase_Url+'Academic_article/get_all_academic_article_like/'+search)
+        .then(response => {
+            // console.log(response.data),
+            this.data_size = 0,
+            this.find = response.data[0],
+            this.data_academic_articles = response.data[1]
+        })
+        this.length_page = 0;
+      }else{
+        this.data_load = false;
+        this.find = null;
+      }
     }
   },
   computed: {
     the_academic_article() {
       var setpage = this.$route.params.Page;
-      var academic_articles = this.$store.getters.getAcademic_Article_Set_Category;
+      var setcategory = this.$route.params.AcademicArticleCategory;
+      this.academic_article_category = setcategory;
+      if(this.data_load==false){
+        axios.get(this.$store.getters.getBase_Url+'Academic_article/get_academic_article/'+this.data_in_page+'/'+this.academic_article_category+'/'+setpage)
+        .then(response => {
+            // console.log(response.data),
+            this.data_size = response.data[0],
+            this.data_academic_articles = response.data[1]
+        })
+        this.data_load = true
+      }
       var p_conpute = 2;
       var p_start = setpage;
       var p_end = Math.ceil(setpage / 1 + p_conpute);
-
       this.page = setpage - 1;
-      this.length_page = Math.ceil(academic_articles.length / this.data_in_page); // set page all
+      this.length_page = Math.ceil(this.data_size / this.data_in_page); // set page all
       // set start && end paging
       if (setpage > p_conpute) {
         p_start = setpage - p_conpute;
@@ -80,7 +151,6 @@ export default {
       }
       this.page_start = p_start;
       this.page_end = p_end;
-
       this.isActive = [];
       for (var i = 0; i <= this.length_page; i++) {
         if (i == this.$route.params.Page) {
@@ -89,15 +159,23 @@ export default {
           this.isActive.push(false);
         }
       }
-      return academic_articles
+      return this.data_academic_articles;
     },
     path_files() {
       return this.$store.getters.getPath_Files;
+    },
+    Academic_Article_Category(){
+      if(this.data_load_category==false){
+        axios.get(this.$store.getters.getBase_Url+"Academic_article/get_all_academic_article_category")
+        .then(response => {
+            // console.log(response)
+            this.academic_article_category_all = response.data
+        })
+        this.data_load_category=true
+      }
+        var category_all = this.academic_article_category_all
+      return category_all
     }
-  },
-  created() {
-    this.$store.dispatch("initDataAcademic_Article")
-    this.$store.dispatch("initDataFiles");
   }
 };
 </script>

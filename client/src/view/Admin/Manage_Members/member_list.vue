@@ -1,60 +1,41 @@
 <template>
-  <div class="container" v-if="the_user">
+  <div class="container" v-if="the_user && the_user.m_status=='admin'">
     <div class="row">
       <div class="col-lg-12 col-xs-12">
         <h4 class="header">
           <center>การจัดการสมาชิก</center>
         </h4>
         <div class="row">
-          <div class="col-lg-2"></div>
-          <div class="col-lg-4">
-            เรียงโดย : {{selected}}
-            <select v-model="selected" class="form-control select">
-              <option class="option" selected value>ทั้งหมด</option>
-              <option class="option" v-for="sl in select" :value="sl.file">{{sl.file}}</option>
-            </select>
-            <br />
+          <div class="col-lg-6 col-12">
           </div>
-          <div class="col-lg-4">
-            ค้นหา : {{search}}
-            <input
-              type="text"
-              class="form-control"
-              placeholder="ค้นหา"
-              v-model="search"
-              v-if="this.selected!='member_type'"
-            />
-            <select v-model="search" class="form-control select" v-if="this.selected == 'member_type'">
-              <option class="option" selected value>เลือกประเภท</option>
-              <option class="option" v-for="mt in Member_Type" :value="mt.mt_id">{{mt.mt_name}}</option>
-            </select>
-            <br />
-          </div>
-          <div class="col-lg-2">
-            <center v-if="search!=''">Result : {{listFilter.length}}</center>
+          <div class="col-lg-6 col-12">
+            <input type="text" class="form-control" v-model="searching" placeholder="ค้นหา จาก Username (ชื่อผู้ใช้) ทั้งหมด">
+            <p v-if="searching!=''" style="text-align: right;"> <br>
+            เจอทั้งหมด {{find}} รายการ
+            </p>    
           </div>
         </div>
-        <table class="table" style="width:100%">
+        <table class="table" style="width:100%" v-if="Members">
           <tr style="width:100%">
-            <th style="width:5%">ลำดับ</th>
+            <th style="width:5%">ID</th>
+            <th style="width:10%">ชื่อผู้ใช้</th>
             <th style="width:15%">ชื่อจริง</th>
             <th style="width:15%">นามสกุล</th>
             <th style="width:15%">ชื่อจริง (Eng)</th>
             <th style="width:15%">นามสกุล (Eng)</th>
-            <th style="width:10%">ชื่อผู้ใช้</th>
             <th style="width:15%">ระดับสมาชิก</th>
             <th style="width:10%"></th>
           </tr>
           <tr
-            v-for="(member,index) in listFilter_Paging.slice((page*data_in_page),(page+1)*data_in_page)"
+            v-for="(member,index) in data_member"
             :key="index"
           >
-            <td>{{member.m_id}}</td>
+            <td>{{member.m_id}}</td>            
+            <td>{{member.m_username}}</td>
             <td>{{member.m_firstname.slice(0,35)}}</td>
             <td>{{member.m_lastname}}</td>
             <td>{{member.m_firstname_eng}}</td>
             <td>{{member.m_lastname_eng}}</td>
-            <td>{{member.m_username}}</td>
             <td>
               <div v-for="mt in Member_Type" v-if="mt.mt_id == member.m_type">{{mt.mt_name}}</div>
             </td>
@@ -91,26 +72,27 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      select: [
-        { file: "firstname" },
-        { file: "lastname" },
-        { file: "firstname ENG" },
-        { file: "lastname ENG" },
-        { file: "username" },
-        { file: "member_type" }
-      ],
-      selected: "",
-      search: "",
-      // paging //
+
+      data_member:'',
+      data_size:'',
+      data_load:false,
       page: 0,
       data_in_page: 10,
       length_page: 0,
       page_start: 0,
       page_end: 0,
-      isActive: []
+      isActive: [],
+            
+      searching:'',
+      find:null,
+
+
+      data_load_member_type:false,
+      data_member_type:''
     };
   },
   methods: {
@@ -129,19 +111,31 @@ export default {
     }
   },
   watch: {
-    selected: function(val) {
-      this.search = "";
-      // back to page 1
-      this.$router.push({
-        name: "AdminM",
-        params: { Page: 1 }
-      });
+    $route (to, from){
+      this.data_load = false;
     },
-    search: function(val) {
-      this.$router.push({
-        name: "AdminM",
-        params: { Page: 1 }
-      });
+    the_user(){
+      this.data_load = false;
+      this.searching = ''
+    },
+    searching(){
+      if(this.searching[0] == ' '){
+        this.searching = ''
+      }
+      if(this.searching.length>0){
+        var search = encodeURI(this.searching);
+        axios.get(this.$store.getters.getBase_Url+'User/get_all_username_like/'+search)
+        .then(response => {
+            // console.log(response.data)
+            this.data_size = 0,
+            this.find = response.data[0],
+            this.data_member = response.data[1]
+        })
+        this.length_page = 0;
+      }else{
+        this.data_load = false;
+        this.find = null;
+      }
     }
   },
   computed: {
@@ -153,59 +147,37 @@ export default {
       return user;
     },
     Member_Type() {
-      return this.$store.getters.getMember_Type;
+      if(this.data_load_member_type==false){
+          axios.get(this.$store.getters.getBase_Url+'User/get_all_member_type')
+          .then(response => {
+              // console.log(response.data)
+              this.data_member_type = response.data
+          })
+          this.data_load_member_type = true
+      }
+      var member_type_all = this.data_member_type
+      return member_type_all
     },
     Members() {
-      return this.$store.getters.getMembers;
-    },
-    listFilter() {
-      let text = this.search.trim();
-      if (this.selected == "username") {
-        return this.Members.filter(item => {
-          return item.m_username.indexOf(text) > -1;
-        });
-      } else if (this.selected == "firstname") {
-        return this.Members.filter(item => {
-          return item.m_firstname.indexOf(text) > -1;
-        });
-      } else if (this.selected == "lastname") {
-        return this.Members.filter(item => {
-          return item.m_lastname.indexOf(text) > -1;
-        });
-      } else if (this.selected == "member_type") {
-        return this.Members.filter(item => {
-          return item.m_type.indexOf(text) > -1;
-        });
-      } else if (this.selected == "firstname ENG") {
-        return this.Members.filter(item => {
-          return item.m_firstname_eng.indexOf(text) > -1;
-        });
-      } else if (this.selected == "lastname ENG") {
-        return this.Members.filter(item => {
-          return item.m_lastname_eng.indexOf(text) > -1;
-        });
-      } else if (this.selected == "") {
-        return this.Members.filter(item => {
-          return (
-            item.m_username.indexOf(text) > -1 ||
-            item.m_firstname.indexOf(text) > -1 ||
-            item.m_lastname.indexOf(text) > -1 ||
-            item.m_firstname_eng.indexOf(text) > -1 ||
-            item.m_lastname_eng.indexOf(text) > -1
-          );
-          // || item.m_type.indexOf(text) > - 1
-        });
-      }
-    },
-    listFilter_Paging() {
       var setpage = this.$route.params.Page;
-      var memberlist = this.listFilter;
+      if(this.data_load==false && this.data_in_page){
+          var FD = new FormData();
+          FD.append("number_of_row", JSON.stringify(this.data_in_page));
+          FD.append("pagenow", JSON.stringify(setpage));
+
+          axios.post(this.$store.getters.getBase_Url+'User/get_member_all_by_admin',FD)
+          .then(response => {
+              // console.log(response.data)
+              this.data_size = response.data[0],
+              this.data_member = response.data[1]
+          })
+          this.data_load = true
+      }
       var p_conpute = 2;
       var p_start = setpage;
       var p_end = Math.ceil(setpage / 1 + p_conpute);
-
       this.page = setpage - 1;
-      this.length_page = Math.ceil(memberlist.length / this.data_in_page); // set page all
+      this.length_page = Math.ceil(this.data_size / this.data_in_page); // set page all
       // set start && end paging
       if (setpage > p_conpute) {
         p_start = setpage - p_conpute;
@@ -218,7 +190,6 @@ export default {
       }
       this.page_start = p_start;
       this.page_end = p_end;
-
       this.isActive = [];
       for (var i = 0; i <= this.length_page; i++) {
         if (i == this.$route.params.Page) {
@@ -227,12 +198,8 @@ export default {
           this.isActive.push(false);
         }
       }
-      return memberlist;
+      return this.data_member;
     }
-  },
-  created() {
-    this.$store.dispatch("initMembers");
-    this.$store.dispatch("initDataMember_Type");
   }
 };
 </script>

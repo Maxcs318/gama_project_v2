@@ -21,6 +21,59 @@
         {
             return json_encode($this->db->get($this->tableName)->result());
         }
+
+        //////////////////////////////////////////////////////////////////////////////////
+        
+        // check_user_already
+        public function check_user_already($username)
+        {
+            $result = $this->db->where('m_username',$username)->get($this->tableName)->result();
+            if( sizeof($result) == 0){
+                $result[0] = 'YES';
+            }
+            return json_encode($result[0]);
+        }
+        // get_member_type_by_id
+        public function get_member_type_by_id($member_type_id)
+        {
+            $result = $this->db->where('mt_id',$member_type_id)->get($this->member_type)->result();
+            return json_encode($result[0]);
+        }
+        // get_member_upgrade_date_by_id
+        public function get_member_upgrade_date_by_id($member_upgrade_date_id)
+        {
+            $result = $this->db->where('mud_id',$member_upgrade_date_id)->get($this->member_upgrade_date)->result();
+            return json_encode($result[0]);
+        }
+        // get_member_all_by_admin
+        public function get_member_all_by_admin($number_of_rows,$pagenow)
+        {
+            $this->db->order_by('m_id', 'DESC');
+            $index_start = ($pagenow-1)*$number_of_rows;
+
+            $tableName_result = $this->db->limit($number_of_rows,$index_start)->get($this->tableName)->result(); 
+            $tableName_row_all = $this->db->from($this->tableName)->count_all_results();
+           
+            $result = [$tableName_row_all,$tableName_result];
+            return json_encode($result);   
+        }
+        // get_this_member
+        public function get_this_member($id)
+        {
+            $result = $this->db->where('m_id',$id)->get($this->tableName)->result(); 
+            return json_encode($result[0]);   
+        }
+        // get_all_username_like
+        public function get_all_username_like($title_search)
+        {
+            $this->db->order_by('m_id', 'DESC');
+            $username_result = $this->db->like('m_username',$title_search,'both')->get($this->tableName)->result();
+            $username_row_all = sizeof($username_result);
+            $result = [$username_row_all,$username_result];
+            return json_encode($result); 
+        }
+        //////////////////////////////////////////////////////////////////////////////////
+
         // all member_type
         public function get_all_member_type()
         {
@@ -37,6 +90,7 @@
             $data['m_create_date'] = $this->Check__model->date_time_now();
             $data['m_status'] = 'user';
             $data['m_id'] = null;
+            $data['m_type'] = 1;
             if($data['m_username'] == ''||$data['m_username'] == null ){
                 return 'fail';
                 // exit;
