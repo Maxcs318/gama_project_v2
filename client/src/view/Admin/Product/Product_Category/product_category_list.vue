@@ -64,8 +64,7 @@ export default {
                 // console.log(response.data)
                 this.data_check_product_category = response.data,   
                 this.check_product_category = 'success'
-            })
-            setTimeout(() => {
+            
                 if(this.data_check_product_category == 0 && this.check_product_category == 'success'){
                     var FD  = new FormData()
                     FD.append('product_categoryID',JSON.stringify(this_product_category))
@@ -91,9 +90,9 @@ export default {
                 }else{
                     swal({title: "ประเภทสินค้านี้ ไม่สามารถลบได้",text: "เนื่องจากมี สินค้า บางรายการใช้ประเภทสินค้านี้อยู่",icon: "warning",});
                 }
-            },100);
-            this.data_check_product_category = 0   
-            this.check_product_category = null
+            })
+            // this.data_check_product_category = 0   
+            // this.check_product_category = null
         }
     },
     watch:{

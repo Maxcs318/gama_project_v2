@@ -53,13 +53,14 @@ export default {
         },
         deleteAcademicArticle_Category(this_academicarticle){
             // console.log(this_academicarticle)
+            // this.data_check_academic_article_category = null,this.check_academic_article_category = null
             axios.get(this.$store.getters.getBase_Url+'Academic_article/check_academic_article_and_article_academic_category/'+this_academicarticle)
             .then(response => {
                 // console.log(response.data)
                 this.data_check_academic_article_category = response.data,   
                 this.check_academic_article_category = 'success'
-            })
-            setTimeout(() => {
+                // console.log(this.data_check_academic_article_category)
+                // console.log(this.check_academic_article_category)
                 if(this.data_check_academic_article_category == 0 && this.check_academic_article_category == 'success'){
                     // -----
                     var FD  = new FormData()
@@ -86,9 +87,9 @@ export default {
                 }else{
                     swal({title: "ประเภทบทความวิชาการนี้ ไม่สามารถลบได้",text: "เนื่องจากมี บทความวิชาการ บางรายการใช้ประเภทบทความวิชาการนี้อยู่",icon: "warning",});
                 }
-            },100);
-            this.data_check_academic_article_category = 0   
-            this.check_academic_article_category = null
+            })
+            // this.data_check_academic_article_category = 0   
+            // this.check_academic_article_category = null
         }
     },
     computed:{

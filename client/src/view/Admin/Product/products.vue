@@ -106,9 +106,8 @@ export default {
                 // console.log(response.data)
                 this.data_check_product = response.data,   
                 this.check_product = 'success'
-            })
-    
-            setTimeout(() => {
+           
+
                 if(this.data_check_product == 0 && this.check_product == 'success'){
                     var FD  = new FormData()
                     FD.append('productID',JSON.stringify(thisproduct))
@@ -136,9 +135,9 @@ export default {
                 }else{
                     swal({title: "สินค้านี้ ไม่สามารถลบได้",text: "เนื่องจากสินค้าถูกสั่งซื้อไปแล้ว การลบ อาจทำให้ข้อมูลเสียหาย",icon: "warning",});
                 }
-            },100);
-            this.data_check_product = 0   
-            this.check_product = null
+             })
+            // this.data_check_product = 0   
+            // this.check_product = null
         }
     },
     watch:{

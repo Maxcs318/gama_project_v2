@@ -58,8 +58,7 @@ export default {
                 // console.log(response.data)
                 this.data_check_article_category = response.data,   
                 this.check_article_category = 'success'
-            })
-            setTimeout(() => {
+            
                 if(this.data_check_article_category == 0 && this.check_article_category == 'success'){
                     var FD  = new FormData()
                     FD.append('article_categoryID',JSON.stringify(this_article))
@@ -85,9 +84,9 @@ export default {
                 }else{
                     swal({title: "ประเภทบทความนี้ ไม่สามารถลบได้",text: "เนื่องจากมี บทความ บางรายการใช้ประเภทบทความนี้อยู่",icon: "warning",});
                 }
-            },100);
-            this.data_check_article_category = 0   
-            this.check_article_category = null
+            })
+            // this.data_check_article_category = 0   
+            // this.check_article_category = null
         }
     },
     computed:{
