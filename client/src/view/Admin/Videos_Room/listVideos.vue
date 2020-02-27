@@ -86,7 +86,7 @@ export default {
         ListVideos(){
             var roomID = this.$route.params.RoomID
             if(this.data_load==false){
-                axios.get(this.$store.getters.getBase_Url+'Videos_room/get_this_video_room/'+roomID)
+                axios.get(this.$store.getters.getBase_Url+'Videos_Room/get_this_video_room/'+roomID)
                 .then(response => {
                     // console.log(response.data)
                     this.data_video_room = response.data[0][0],

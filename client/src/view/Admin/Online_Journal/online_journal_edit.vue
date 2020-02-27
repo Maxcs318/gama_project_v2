@@ -231,7 +231,7 @@ export default {
         permission = 9;
       }
       if(this.data_load_oj == false && permission){
-        axios.get(this.$store.getters.getBase_Url+'Online_journal/get_this_online_journal/'+permission+'/'+online_j_ID)
+        axios.get(this.$store.getters.getBase_Url+'Online_Journal/get_this_online_journal/'+permission+'/'+online_j_ID)
         .then(response => {
             // console.log(response.data)
             this.online_journal_data = response.data[0][0],

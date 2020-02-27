@@ -126,7 +126,7 @@ export default {
             }
             if(this.searching.length>0){
                 var search = encodeURI(this.searching);
-                axios.get(this.$store.getters.getBase_Url+'Videos_room/get_all_video_room_like/'+search)
+                axios.get(this.$store.getters.getBase_Url+'Videos_Room/get_all_video_room_like/'+search)
                 .then(response => {
                     // console.log(response.data)
                     this.data_size = 0,
@@ -144,7 +144,7 @@ export default {
         ListRoom(){
             var setpage = this.$route.params.Page;
             if(this.data_load==false){
-                axios.get(this.$store.getters.getBase_Url+'Videos_room/get_video_room/'+this.data_in_page+'/'+setpage)
+                axios.get(this.$store.getters.getBase_Url+'Videos_Room/get_video_room/'+this.data_in_page+'/'+setpage)
                 .then(response => {
                     // console.log(response.data),
                     this.data_size = response.data[0],

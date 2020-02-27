@@ -125,7 +125,7 @@ export default {
   computed: {
     ListRoom() { //Videos_Room/get_all_video_room
       if(this.data_load==false){
-        axios.get(this.$store.getters.getBase_Url+'Videos_room/get_all_video_room')
+        axios.get(this.$store.getters.getBase_Url+'Videos_Room/get_all_video_room')
         .then(response => {
             // console.log(response.data)
             this.data_video_room = response.data

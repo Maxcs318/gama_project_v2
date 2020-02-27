@@ -4,18 +4,18 @@ import axios from "axios"
 
 Vue.use(Vuex)
 // Web Data
-// const base_url = 'https://elite-shoponline.com/gama/public/'
+const base_url = 'https://elite-shoponline.com/gama/public/'
 
 // PC Xampp
-const base_url = 'http://gamaproject.vue.com/'
+// const base_url = 'http://gamaproject.vue.com/'
 
 const store = new Vuex.Store({
     state : {
         // Web Data
-        // file_image_path:'https://elite-shoponline.com/gama/public/assets/',
+        file_image_path:'https://elite-shoponline.com/gama/public/assets/',
         
         // PC Xampp
-        file_image_path:'http://gamaproject.vue.com/assets/',
+        // file_image_path:'http://gamaproject.vue.com/assets/',
 
         Base_Url:base_url,
 

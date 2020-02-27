@@ -103,7 +103,7 @@ export default {
             }
             if(this.searching.length>0){
                 var search = encodeURI(this.searching);
-                axios.get(this.$store.getters.getBase_Url+'Online_journal/get_all_online_journal_like/'+this.permission+'/'+search)
+                axios.get(this.$store.getters.getBase_Url+'Online_Journal/get_all_online_journal_like/'+this.permission+'/'+search)
                 .then(response => {
                     // console.log(response.data)
                     this.data_size = 0,
@@ -137,7 +137,7 @@ export default {
                 this.permission = 9;
             }
             if(this.data_load==false){
-                axios.get(this.$store.getters.getBase_Url+'Online_journal/get_online_journal/'+this.data_in_page+'/'+this.permission+'/'+setpage)
+                axios.get(this.$store.getters.getBase_Url+'Online_Journal/get_online_journal/'+this.data_in_page+'/'+this.permission+'/'+setpage)
                 .then(response => {
                     // console.log(response.data),
                     // console.log(permission),

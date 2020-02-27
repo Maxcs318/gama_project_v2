@@ -67,6 +67,14 @@ export default {
       this.$router.push({name: "academic_article",params: { AcademicArticleID: thisAcademic_Article }});
     }
   },
+  watch:{
+    $route (to, from){
+      this.data_load = false;
+    },
+    searching(){
+      this.do_search
+    }
+  },
   computed: {
     path_files() {
       return this.$store.getters.getPath_Files;
