@@ -16,21 +16,21 @@
             v-for="(product,index) in trainingCourse"
             :key="index"
           >
+          <router-link style="text-decoration: none;"  :to="'/product/'+product.p_id">
             <div class="training-img">
               <img
                 :src="getImgUrlProduct(product.p_image)"
-                @click="seethisPageCourse(product.p_id)"
                 caption="First slide"
               />
               <h5
                 class="course-text"
-                @click="seethisPageCourse(product.p_id)"
               >{{product.p_name.slice(0,70)+"..."}}</h5>
               <p
                 class="course-date"
                 style="text-align: left;"
               >{{product.p_create_date.slice(0,-13)}}</p>
             </div>
+          </router-link>
           </div>
         </div>
       </div>
@@ -53,17 +53,17 @@ export default {
     getImgUrlProduct(picP) {
       return this.path_files + "Product/" + picP;
     },
-    seethisPageCourse(thisproduct) {
-      this.$router.push({
-        name: "product",
-        params: { ProductID: thisproduct }
-      });
-    }
+    // seethisPageCourse(thisproduct) {
+    //   this.$router.push({
+    //     name: "product",
+    //     params: { ProductID: thisproduct }
+    //   });
+    // }
   },
   computed: {
     trainingCourse() {
       if(this.data_load==false){
-        axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/1/1')
+        axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/2/1')
         .then(response => {
         // console.log(response.data),
         this.data_size = response.data[0],

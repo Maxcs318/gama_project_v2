@@ -15,20 +15,21 @@
             class="col-lg-4 col-md-6 article-img"
             style="padding:0;"
             v-for="(article,index) in the_article"
-            :key="index"
+            :key="index" 
           >
+          <!-- @click="seethisPageArticle(article.a_id)" -->
+          <router-link  :to="'/article/'+article.a_id">
             <div class="article-col">
               <img
                 :src="getImgUrlArticle(article.a_image)"
                 width="100%"
-               
-                @click="seethisPageArticle(article.a_id)"
               />
               <h5 class="text">{{article.a_title.slice(0,50)+"..."}}</h5>
               <p class="date" style="text-align: left;">{{article.a_create_date.slice(0,-13)}}</p>
               <!-- <p style="text-indent: 2em;">{{article.a_detail.slice(0,60)}}</p> -->
               <!-- <p style="text-align: right;">อ่านเพิ่มเติม</p> -->
             </div>
+          </router-link>
           </div>
         </div>
       </div>
@@ -50,12 +51,12 @@ export default {
     getImgUrlArticle(picA) {
       return this.path_files + "Article/" + picA;
     },
-    seethisPageArticle(thisarticle) {
-      this.$router.push({
-        name: "article",
-        params: { ArticleID: thisarticle }
-      });
-    }
+    // seethisPageArticle(thisarticle) {
+    //   this.$router.push({
+    //     name: "article",
+    //     params: { ArticleID: thisarticle }
+    //   });
+    // }
   },
   computed: {
     the_article() {

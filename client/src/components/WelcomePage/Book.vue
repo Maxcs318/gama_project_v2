@@ -16,13 +16,16 @@
             v-for="(product,index) in book"
             :key="index"
           >
+          <!-- @click="seethisPageBook(product.p_id)" -->
+          <router-link style="text-decoration: none;"  :to="'/product/'+product.p_id">
             <img 
               class=""
               :src="getImgUrlProduct(product.p_image)"
-              @click="seethisPageBook(product.p_id)" width="100%"
+              width="100%"
             />
             <h5 class="book-detail">{{product.p_name.slice(0,50)+"..."}}</h5>
             <p class="price" style="text-align: center;">฿ {{product.p_price}}</p>
+          </router-link>
           </div>
         </div>
       </div>
@@ -45,12 +48,12 @@ export default {
     getImgUrlProduct(picP) {
       return this.path_files + "Product/" + picP;
     },
-    seethisPageBook(thisproduct) {
-      this.$router.push({
-        name: "product",
-        params: { ProductID: thisproduct }
-      });
-    }
+    // seethisPageBook(thisproduct) {
+    //   this.$router.push({
+    //     name: "product",
+    //     params: { ProductID: thisproduct }
+    //   });
+    // }
   },
   computed: {
     book() {

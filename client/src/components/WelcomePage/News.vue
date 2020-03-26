@@ -5,31 +5,33 @@
         <!-- pc page -->
         <div class="news-pc">
           <div class="col-lg-12 col-12" v-for="(news,index) in the_news.slice(0,1)">
-            <div class="row" >
-              <div class="col-lg-2 col-12">
-                <hr />
+            <router-link style="text-decoration: none; color:white;"  :to="'/newsandactivity/'+news.n_id">
+              <div class="row" >
+                <div class="col-lg-2 col-12">
+                  <hr />
+                </div>
+                <div class="col-lg-4">
+                  <h5 class="head">{{news.n_title}}</h5>
+                  <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
+                  <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
+                </div>
+                <div class="col-lg-6">
+                  <div class="news1"></div>
+                  <div class="news2"></div>
+                  <img
+                    class="img-news"
+                    :src="getImgUrl(news.n_image)"
+                    style="width:100%"
+                  />
+                </div>
               </div>
-              <div class="col-lg-4">
-                <h5 class="head">{{news.n_title}}</h5>
-                <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
-                <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
-              </div>
-              <div class="col-lg-6">
-                <div class="news1"></div>
-                <div class="news2"></div>
-                <img
-                  class="img-news"
-                  :src="getImgUrl(news.n_image)"
-                  style="width:100%"
-                  @click="seethisPageNews(news.n_id)"
-                />
-              </div>
-            </div>
+            </router-link>
           </div>
         </div>
         <!-- mb page -->
         <div class="news-mb">
           <div class="col-lg-12 col-12" v-for="(news,index2) in the_news.slice(0,1)">
+            <router-link style="text-decoration: none; color:white;"  :to="'/newsandactivity/'+news.n_id">
             <div class="row">
               <div class="col-xs-12">
                 <div class="news1"></div>
@@ -38,16 +40,16 @@
                   class="img-news"
                   :src="getImgUrl(news.n_image)"
                   width="100%"
-                  @click="seethisPageNews(news.n_id)"
                 />
               </div>
               <div class="col-12">
-                <h5 class="head" @click="seethisPageNews(news.n_id)">{{news.n_title}}</h5>
+                <h5 class="head">{{news.n_title}}</h5>
                 <hr style="width:100%" />
                 <p class="detail" style="text-align: left;">{{news.n_detail.slice(0,158)}}</p>
                 <p class="news-date1" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
               </div>
             </div>
+            </router-link>
           </div>
         </div>
 
@@ -55,17 +57,17 @@
         <div class="row">
           <div
             class="col-lg-6 col-md-6 col-12"
-            @click="seethisPageNews(news.n_id)"
             v-for="(news,index3) in the_news.slice(1,3)" 
           >
-            <div class="news-2">
-              <img :src="getImgUrl(news.n_image)" width="100%" height="360px" />
-              <h5
-                class="news-text"
-                @click="seethisPageNews(news.n_id)"
-              >{{news.n_title.slice(0,50)+"..."}}</h5>
-              <p class="news-date" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
-            </div>
+            <router-link style="text-decoration: none; color:white;"  :to="'/newsandactivity/'+news.n_id">
+              <div class="news-2">
+                <img :src="getImgUrl(news.n_image)" width="100%" height="360px" />
+                <h5
+                  class="news-text"
+                >{{news.n_title.slice(0,50)+"..."}}</h5>
+                <p class="news-date" style="text-align: left;">{{news.n_create_date.slice(0,-13)}}</p>
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -87,12 +89,12 @@ export default {
     getImgUrl(pic) {
       return this.path_files + "News/" + pic;
     },
-    seethisPageNews(thisnews) {
-      this.$router.push({
-        name: "newsandactivity",
-        params: { NewsID: thisnews }
-      });
-    }
+    // seethisPageNews(thisnews) {
+    //   this.$router.push({
+    //     name: "newsandactivity",
+    //     params: { NewsID: thisnews }
+    //   });
+    // }
   },
   computed: {
     the_news() {

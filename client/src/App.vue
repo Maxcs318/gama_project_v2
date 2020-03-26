@@ -16,7 +16,7 @@
           <!-- slide-fade -->
           <!-- page -->
           <!-- mode="out-in" -->
-          <transition name="slide-fade" >
+          <transition :name="transitionName" >
             <router-view ></router-view>
           </transition>
         <!-- </div> -->
@@ -45,6 +45,7 @@ export default {
       adminBG: {
         backgroundColor: "#01152E"
       },
+      transitionName:"slide-fade"
     };
   },
   mounted(){
@@ -62,7 +63,13 @@ export default {
     }
   },
   watch:{
-    $route (to, from){
+    '$route' (to, from){
+      // console.log(to.path)
+      // console.log(from.path)
+      const toDepth = to.path
+      const fromDepth = from.path
+      this.transitionName = toDepth != fromDepth ? 'slide-fade' : 'slide-fade'
+
       if(this.$route.path=='/'){
         setTimeout(() => {
           window.scrollTo(0,0);    

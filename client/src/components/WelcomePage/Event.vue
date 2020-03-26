@@ -2,7 +2,7 @@
   <div>
     <div class="event">
       <div class="container">
-        <router-link to="/gallerylist/1" title="กิจกรรมทั้งหมดของ GAMA">
+        <router-link style="text-decoration: none;" to="/gallerylist/1" title="กิจกรรมทั้งหมดของ GAMA">
           <h1>ภาพกิจกรรมของ GAMA</h1>
         </router-link>
         <div class="row">
@@ -10,11 +10,13 @@
             class="col-lg-3 col-6"
             v-for="(gallery,index) in Gallery"
             :key="index"
-            @click="seethisGallery(gallery.g_id)"
           >
+          <!-- @click="seethisGallery(gallery.g_id)" -->
+          <router-link style="text-decoration: none;"  :to="'/gallery/'+gallery.g_id">
             <div class="shadow-block1"></div>
             <div class="shadow-block2"></div>
             <img :src="getImgUrlGallery(gallery.g_image)" />
+          </router-link>
           </div>
         </div>
       </div>
@@ -37,12 +39,12 @@ export default {
     getImgUrlGallery(pic) {
       return this.path_files + "Gallery/" + pic;
     },
-    seethisGallery(this_Gallery) {
-      this.$router.push({
-        name: "gallery",
-        params: { GalleryID: this_Gallery }
-      });
-    }
+    // seethisGallery(this_Gallery) {
+    //   this.$router.push({
+    //     name: "gallery",
+    //     params: { GalleryID: this_Gallery }
+    //   });
+    // }
   },
   computed: {
     path_files() {
