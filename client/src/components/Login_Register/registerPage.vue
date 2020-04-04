@@ -5,30 +5,32 @@
         <div class="col-lg-4 col-10" >
             
             <form @submit.prevent="onSubmitRegister">
-                <center><h3> Register </h3></center>
+                <center><h3> สมัครสมาชิก </h3></center>
                 <br>
-                <h5>Firstname</h5>
+                <h5>กรุณากรอกข้อมูลใน <b class="alert-required">( * )</b> ให้ครบถ้วน</h5>
+                <br>
+                <h5>ชื่อจริง <b class="alert-required"> * </b></h5> 
                 <input type="text" v-model="newuser.m_firstname" class="form-control" required>
                 <br>
-                <h5>Lastname</h5>
+                <h5>นามสกุล <b class="alert-required"> * </b></h5>
                 <input type="text" v-model="newuser.m_lastname" class="form-control" required>
                 <br>
-                <h5>Username {{text_alert}}</h5> 
+                <h5>Username {{text_alert}} <b class="alert-required"> * </b></h5> 
                 <input type="text" v-model="newuser.m_username" class="form-control" required>
                 <br>
-                <h5>Password</h5>
+                <h5>Password <b class="alert-required"> * </b></h5>
                 <input type="password" v-model="password_normal" class="form-control" required>
                 <br>
                 <br>
                 <div class="row">
                     <div class="col-6">
-                        <button type="button" class="form-control col-12 btn-danger" @click="back_1"> Back </button>
+                        <button type="button" class="form-control col-12 btn-danger" @click="back_1"> กลับ </button>
                     </div>
                     <br>
                     <br>
                     <br>
                     <div class="col-6">
-                        <button type="submit" class="form-control col-12 btn-primary"> Save </button>
+                        <button type="submit" class="form-control col-12 btn-primary"> ยืนยัน </button>
                     </div>
                     <br>
                     <br>

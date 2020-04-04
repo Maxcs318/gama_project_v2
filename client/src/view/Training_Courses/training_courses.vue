@@ -13,7 +13,7 @@
     </div>
     <div class="row">
       <div
-        class="col-lg-4 col-12"
+        class="col-lg-4 col-12 hv-eff"
         v-for="(product,index) in trainingC"
         :key="index"
       >
@@ -161,13 +161,6 @@ export default {
 };
 </script>
 <style scoped>
-img,
-.course-name,
-.course-name2,
-.course-date,
-.course-date2 {
-  cursor: pointer;
-}
 .course-name {
   position: absolute;
   top: 70%;

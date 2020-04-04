@@ -12,7 +12,7 @@
         <br />
         รายละเอียด : {{thisGallery.g_description}}
         <br />
-        วันที่สร้าง : {{thisGallery.g_create_date}}
+        วันที่เผยแพร่ : {{thisGallery.g_create_date}}
         <br />
         แก้ไขล่าสุด : {{thisGallery.g_update_date}}
         <br /><br>

@@ -19,9 +19,8 @@
           <!-- @click="seethisPageBook(product.p_id)" -->
           <router-link style="text-decoration: none;"  :to="'/product/'+product.p_id">
             <img 
-              class=""
+              class="book-img"
               :src="getImgUrlProduct(product.p_image)"
-              width="100%"
             />
             <h5 class="book-detail">{{product.p_name.slice(0,50)+"..."}}</h5>
             <p class="price" style="text-align: center;">฿ {{product.p_price}}</p>
@@ -88,9 +87,11 @@ export default {
 }
 
 .book-img {
+  display: block;
   cursor: pointer;
   background: #d8d8d8;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
+  margin: auto;
   width: auto;
   height: 244px;
 }
@@ -100,6 +101,7 @@ export default {
 }
 
 .header {
+  text-align: left;
   font-style: normal;
   margin-bottom: 34px;
   font-weight: 600;

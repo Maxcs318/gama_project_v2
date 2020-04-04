@@ -14,8 +14,8 @@
         </div>
         <div class="row">
             <div class="col-lg-4 col-xs-12" v-for="(list,index) in ListRoom" :key="index">
-                <div @click="seethisRoom(list.vr_id)">
-                Room Name: <b>{{list.vr_title}}</b> <br>
+                <div>
+                Room Name: <b @click="seethisRoom(list.vr_id)" class="video-name">{{list.vr_title}}</b> <br>
                 Description: {{list.vr_description.slice(0,10)}} ... <br>
                 Create Date: {{list.vr_create_date}} <br>
                 Update Date: {{list.vr_update_date}} <br>

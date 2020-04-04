@@ -1,10 +1,10 @@
 <template>
-    <div class="container " v-if="ListVideos">
+    <div class="container" v-if="ListVideos">
         <h4><center> {{data_video_room[0].vr_title}} </center></h4>
         <div class="row">
-            <div class="col-lg-12 col-xs-12" v-for="( listv,index ) in data_videos" :key="index">
-                <div @click="seethisVideo(listv.v_id)">
-                    Video Name: <b> {{listv.v_title}} </b> <br>
+            <div class="col-lg-9 col-xs-12" v-for="( listv,index ) in data_videos" :key="index">
+                <div >
+                    Video Name: <b @click="seethisVideo(listv.v_id)" class="video-name"> {{listv.v_title}} </b> <br>
                     Description: {{listv.v_description}}
                     <hr>
                 </div>

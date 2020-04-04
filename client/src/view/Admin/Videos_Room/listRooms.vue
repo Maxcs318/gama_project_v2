@@ -16,16 +16,16 @@
             <div class="col-lg-12 col-md-12">
                 <table class="table" style="width:100%" >
                     <tr style="width:100%">
-                        <th style="width:5%">ID</th>
+                        <!-- <th style="width:5%">ID</th> -->
                         <th style="width:25%">ชื่อห้อง</th>
-                        <th style="width:20%">วันที่สร้าง</th>
+                        <th style="width:20%">วันที่เผยแพร่</th>
                         <th style="width:20%">วันที่แก้ไข</th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                     </tr>
                     <tr v-for="(list,index) in ListRoom" :key="index" >
-                        <td>{{list.vr_id}}</td>
+                        <!-- <td>{{list.vr_id}}</td> -->
                         <td>{{list.vr_title.slice(0,25)}}</td>
                         <td>{{list.vr_create_date}}</td>
                         <td>{{list.vr_update_date}}</td>

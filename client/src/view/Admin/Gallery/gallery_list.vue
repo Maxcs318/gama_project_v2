@@ -18,15 +18,15 @@
             <div class="col-lg-12 col-xs-12">
                 <table class="table" style="width:100%" >
                     <tr style="width:100%">
-                        <th style="width:5%">ID</th>
+                        <!-- <th style="width:5%">ID</th> -->
                         <th style="width:35%">ชื่อกิจกรรม</th>
-                        <th style="width:20%">วันที่สร้าง</th>
+                        <th style="width:20%">วันที่เผยแพร่</th>
                         <th style="width:20%">วันที่แก้ไข</th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                     </tr>
                     <tr v-for="(gallery,index) in Gallery" :key="index">
-                        <td>{{ gallery.g_id }}</td>
+                        <!-- <td>{{ gallery.g_id }}</td> -->
                         <td>{{gallery.g_name.slice(0,35)}}</td>
                         <td>{{gallery.g_create_date}}</td>
                         <td>{{gallery.g_update_date}}</td>

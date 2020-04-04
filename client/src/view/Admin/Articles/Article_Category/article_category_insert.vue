@@ -37,7 +37,7 @@
                 type="text"
                 v-model="article.ac_title"
                 class="form-control"
-                placeholder="ประเภทของบทความ"
+                placeholder="ประเภทของบทความ #จำเป็นต้องใส่"
                 required
               />
               <br />

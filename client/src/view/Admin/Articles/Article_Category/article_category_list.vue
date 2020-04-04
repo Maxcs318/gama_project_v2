@@ -13,7 +13,7 @@
                     <tr style="width:100%">
                         <th style="width:5%">ลำดับ</th>
                         <th style="width:35%">หัวข้อประเภทบทความ</th>
-                        <th style="width:20%">วันที่สร้าง</th>
+                        <th style="width:20%">วันที่เผยแพร่</th>
                         <th style="width:20%">วันที่แก้ไข</th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>

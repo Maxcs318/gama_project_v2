@@ -22,9 +22,9 @@
       <div class="col-lg-12 col-md-12">
         <table class="table" style="width:100%">
           <tr style="width:100%">
-            <th style="width:5%">ลำดับ</th>
+            <!-- <th style="width:5%">ลำดับ</th> -->
             <th style="width:35%">หัวข้อบทความ</th>
-            <th style="width:20%">วันที่สร้าง</th>
+            <th style="width:20%">วันที่เผยแพร่</th>
             <th style="width:20%">วันที่แก้ไข</th>
             <th style="width:10%"></th>
             <th style="width:10%"></th>
@@ -33,7 +33,7 @@
             v-for="(article,index) in the_article"
             :key="index"
           >
-            <td>{{ article.a_id }}</td>
+            <!-- <td>{{ article.a_id }}</td> -->
             <td>{{article.a_title.slice(0,35)}}</td>
             <td>{{article.a_create_date}}</td>
             <td>{{article.a_update_date}}</td>

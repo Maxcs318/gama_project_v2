@@ -19,7 +19,7 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-xs-12" v-for="(product,index) in ProductAll" :key="index">
-                <img :src="getImgUrlProduct(product.p_image)" width="100%" @click="seethisPageProduct(product.p_id)">
+                <img :src="getImgUrlProduct(product.p_image)" width="100%" class="hv-eff" @click="seethisPageProduct(product.p_id)">
                 <h5 @click="seethisPageProduct(product.p_id)">{{product.p_name}}</h5>
                 <p style="text-align: center;">{{product.p_price}} ฿</p>
                     <!-- <div v-for="PC in Product_Category">

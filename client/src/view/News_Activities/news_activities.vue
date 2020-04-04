@@ -14,7 +14,7 @@
     </div>
     <div class="row">
       <div
-        class="col-lg-6 col-12"
+        class="col-lg-6 col-12 hv-eff"
         @click="seethisPage(news.n_id)"
         v-for="(news,index) in the_news"
         :key="index"
@@ -181,7 +181,6 @@ export default {
   width: 100%;
   height: 370px;
   margin-bottom: 54px;
-  cursor: pointer;
 }
 .shadow-news1 {
   position: absolute;
@@ -209,7 +208,6 @@ export default {
   width: 100%;
   height: 370px;
   margin-bottom: 12px;
-  cursor: pointer;
 }
 .activitiesall-text2 {
   position: absolute;

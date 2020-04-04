@@ -46,7 +46,7 @@
       <div class="col-lg-12 col-12">
         <table class="table" style="width:85%">
           <tr style="width:100%">
-            <th style="width:5%; text-align:center;">#</th>
+            <th style="width:7%; text-align:center;">#</th>
             <th style="width:35%">รายชื่อ</th>
             <th style="width:20%">บริษัท</th>
             <th style="width:20%">ประเภทรางวัล</th>
@@ -57,13 +57,16 @@
               :key="index"
             >
               <td style="text-align:center;">{{ (data_in_page*page)+ index+1 }}</td>
+              <!-- รายชื่อ -->
               <td>{{award.al_recipient}}</td>
+              <!-- บริษัท -->
               <td>
                 <div
                   v-for="company in Company"
                   v-if="company.c_id == award.al_company_id"
                 >{{company.c_title}}</div>
               </td>
+              <!-- ประเภทรางวัล -->
               <td>
                 <div
                   v-for="at in Award_type_All"

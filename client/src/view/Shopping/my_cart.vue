@@ -4,7 +4,7 @@
     <div v-if="address_show == 'OFF'">
       <div class="row">
         <div class="col-lg-10 col-7">
-          <header> รายการสินค้าในตะกร้า</header>
+          <header>รายการสินค้าในตะกร้า</header>
         </div>
         <div class="col-lg-2 col-5">
           <button type="button" class="form-control btn-warning" @click="page_order">Order</button>
@@ -20,14 +20,10 @@
         <br />
         <br />
         <center>
-          <router-link to="/training_courses/1" class="empty-link">
-            เลือกซื้อหลักสูตร & อบรม >
-          </router-link>
+          <router-link to="/training_courses/1" class="empty-link">เลือกซื้อหลักสูตร & อบรม ></router-link>
           <br />
           <br />
-          <router-link to="/books/1" class="empty-link">
-            เลือกซื้อหนังสือ >
-          </router-link>
+          <router-link to="/books/1" class="empty-link">เลือกซื้อหนังสือ ></router-link>
         </center>
       </div>
 
@@ -52,7 +48,7 @@
               </button>
             </div>
           </div>
-          <br>
+          <br />
           <div class="row">
             <div class="col-lg-6 col-12">
               <img
@@ -131,6 +127,12 @@
             <h5>
               <center>Shipping Address</center>
             </h5>
+            <br />
+            <h5>
+              กรุณากรอกข้อมูลใน
+              <b class="alert-required">( * )</b> ให้ครบถ้วน
+            </h5>
+            <br />
             <div v-if="My_Shipping_Address!=''">
               Select Old Shipping Address
               <select class="form-control select" v-model="select_sa">
@@ -141,8 +143,7 @@
                   :value="shipping.sa_id"
                 >{{ shipping.sa_title }}</option>
               </select>
-            </div>
-            Title
+            </div>Title <b class="alert-required"> * </b>
             <input
               type="text"
               v-model="shipping_address.sa_title"
@@ -150,7 +151,7 @@
               :disabled="click_select_sa()"
               required
             />
-            Name
+            Name <b class="alert-required"> * </b>
             <input
               type="text"
               v-model="shipping_address.sa_first_name"
@@ -158,7 +159,7 @@
               :disabled="click_select_sa()"
               required
             />
-            Address
+            Address <b class="alert-required"> * </b>
             <textarea
               class="form-control select"
               rows="5"
@@ -166,7 +167,7 @@
               :disabled="click_select_sa()"
               required
             ></textarea>
-            Postcode
+            Postcode <b class="alert-required"> * </b>
             <input
               type="text"
               v-model="shipping_address.sa_postcode"
@@ -174,7 +175,7 @@
               :disabled="click_select_sa()"
               required
             />
-            Phone
+            Phone <b class="alert-required"> * </b>
             <input
               type="text"
               v-model="shipping_address.sa_phone"
@@ -182,7 +183,7 @@
               :disabled="click_select_sa()"
               required
             />
-            E-mail
+            E-mail <b class="alert-required"> * </b>
             <input
               type="email"
               v-model="shipping_address.sa_email"
@@ -190,7 +191,7 @@
               :disabled="click_select_sa()"
               required
             />
-            Company
+            Company <b class="alert-required"> * </b>
             <input
               type="text"
               v-model="shipping_address.sa_company"
@@ -230,7 +231,7 @@ export default {
       address_show: "OFF",
       shipping_address: {
         sa_title: "",
-        sa_first_name:'',
+        sa_first_name: "",
         sa_address: "",
         sa_postcode: "",
         sa_phone: "",
@@ -240,12 +241,11 @@ export default {
       thisMyCart: "",
       total_Price: 0,
 
-      data_product_in_my_cart:'',
+      data_product_in_my_cart: "",
 
-
-      data_my_shipping_address:'',
-      data_load:false,
-      data_load_product:false
+      data_my_shipping_address: "",
+      data_load: false,
+      data_load_product: false
     };
   },
   methods: {
@@ -265,8 +265,8 @@ export default {
           this.address_show = "OFF";
         }
         setTimeout(() => {
-          window.scrollTo(0,0);    
-        }, 10)
+          window.scrollTo(0, 0);
+        }, 10);
       }
     },
     click_select_sa() {
@@ -354,10 +354,13 @@ export default {
     }
   },
   watch: {
-    data_product_in_my_cart(){
+    data_product_in_my_cart() {
       // console.log(123,this.data_product_in_my_cart.length)
-      if(this.data_load_product == true && this.data_product_in_my_cart.length>500){
-          this.$store.dispatch("Remove_Cart");        
+      if (
+        this.data_load_product == true &&
+        this.data_product_in_my_cart.length > 500
+      ) {
+        this.$store.dispatch("Remove_Cart");
       }
     },
     select_sa: function() {
@@ -378,8 +381,8 @@ export default {
         }
       }
     },
-    the_user(){
-      this.data_load_product = false
+    the_user() {
+      this.data_load_product = false;
     }
   },
   computed: {
@@ -395,7 +398,7 @@ export default {
       }
       return true;
     },
-    the_user(){
+    the_user() {
       return this.$store.getters.getThe_User;
     },
     MyCart() {
@@ -407,38 +410,42 @@ export default {
       var user = this.$store.getters.getThe_User;
       var the_price = null; // set price for user
       // console.log(cart)
-      
-      if( this.data_load_product == false && this.address_show == 'OFF'  ){
+
+      if (this.data_load_product == false && this.address_show == "OFF") {
         var FD = new FormData();
         FD.append("cart", JSON.stringify(cart));
-        axios.post(this.$store.getters.getBase_Url+"Product/get_product_in_cart", FD)
-        .then(response => {
-          // console.log(response.data)
-          this.data_product_in_my_cart = response.data
-        })
-        this.data_load_product = true
+        axios
+          .post(
+            this.$store.getters.getBase_Url + "Product/get_product_in_cart",
+            FD
+          )
+          .then(response => {
+            // console.log(response.data)
+            this.data_product_in_my_cart = response.data;
+          });
+        this.data_load_product = true;
       }
-      var product_in_cart = this.data_product_in_my_cart
-      
-      for(var i=0;i<product_in_cart.length;i++){
-        if(user.m_type == "2" || user.m_type == "3") {
+      var product_in_cart = this.data_product_in_my_cart;
+
+      for (var i = 0; i < product_in_cart.length; i++) {
+        if (user.m_type == "2" || user.m_type == "3") {
           the_price = product_in_cart[i].p_price2;
         } else {
           the_price = product_in_cart[i].p_price;
         }
       }
-      for(var a=0;a<product_in_cart.length;a++){
-        for(var b=0;b<cart.length;b++){
-          if(product_in_cart[a].p_id == cart[b].p_id){
-            if(user.m_type == "2" || user.m_type == "3") {
+      for (var a = 0; a < product_in_cart.length; a++) {
+        for (var b = 0; b < cart.length; b++) {
+          if (product_in_cart[a].p_id == cart[b].p_id) {
+            if (user.m_type == "2" || user.m_type == "3") {
               the_price = product_in_cart[a].p_price2;
             } else {
               the_price = product_in_cart[a].p_price;
             }
-              product_in_cart[a].quantity = cart[b].quantity
-              product_in_cart[a].p_price = the_price
-              product_in_cart[a].price_total= null
-              // console.log(the_price);
+            product_in_cart[a].quantity = cart[b].quantity;
+            product_in_cart[a].p_price = the_price;
+            product_in_cart[a].price_total = null;
+            // console.log(the_price);
           }
         }
       }
@@ -447,14 +454,19 @@ export default {
     },
     My_Shipping_Address() {
       var myID = this.the_user.m_id;
-      // 
-      if(this.data_load==false && this.address_show=='ON'){
-        axios.get(this.$store.getters.getBase_Url+'Shipping_Address/get_my_shipping_address/'+myID)
-        .then(response => {
+      //
+      if (this.data_load == false && this.address_show == "ON") {
+        axios
+          .get(
+            this.$store.getters.getBase_Url +
+              "Shipping_Address/get_my_shipping_address/" +
+              myID
+          )
+          .then(response => {
             // console.log(response.data)
-            this.data_my_shipping_address = response.data
-        })
-        this.data_load = true
+            this.data_my_shipping_address = response.data;
+          });
+        this.data_load = true;
       }
       var my_shipping_address_all = this.data_my_shipping_address;
       return my_shipping_address_all;
@@ -580,8 +592,10 @@ hr {
   }
 }
 
-input, select, textarea{
-    color: #000;
-    background-color: #fff;
+input,
+select,
+textarea {
+  color: #000;
+  background-color: #fff;
 }
 </style>

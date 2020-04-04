@@ -23,13 +23,13 @@
     <br>
     <div class="row">
       <div
-        class="col-lg-6 col-12"
+        class="col-lg-6 col-12 hv-eff"
         @click="seethisPage(article.a_id)"
         v-for="(article,index) in the_article"
         :key="index"
         style="margin-bottom: 32px;"
       >
-        <img :src="getImgUrlArticle(article.a_image)" width="100%" height="370px" />
+        <img :src="getImgUrlArticle(article.a_image)" width="100%" height="370px"/>
         <h5 class="head">{{article.a_title.slice(0,50)+"..."}}</h5>
         <p class="date">{{article.a_create_date.slice(0,-13)}}</p>
       </div>
@@ -192,10 +192,6 @@ export default {
 };
 </script>
 <style scoped>
-img {
-  cursor: pointer;
-}
-
 .head {
   position: absolute;
   z-index: 0;

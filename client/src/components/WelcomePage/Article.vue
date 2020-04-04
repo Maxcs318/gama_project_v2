@@ -93,6 +93,7 @@ export default {
 }
 
 .header {
+  text-align: left;
   font-style: normal;
   margin-bottom: 34px;
   font-weight: 600;

@@ -18,7 +18,7 @@
         <table class="table" style="width:100%" v-if="Members">
           <tr style="width:100%">
             <th style="width:5%">ID</th>
-            <th style="width:10%">ชื่อผู้ใช้</th>
+            <th style="width:10%">Username</th>
             <th style="width:15%">ชื่อจริง</th>
             <th style="width:15%">นามสกุล</th>
             <th style="width:15%">ชื่อจริง (Eng)</th>

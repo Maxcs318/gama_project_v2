@@ -21,15 +21,15 @@
             <div class="col-lg-12 col-md-12">
                 <table class="table" style="width:100%" >
                     <tr style="width:100%">
-                        <th style="width:5%">ลำดับ</th>
+                        <!-- <th style="width:5%">ลำดับ</th> -->
                         <th style="width:35%">หัวข้องานวิจัย</th>
-                        <th style="width:20%">วันที่สร้าง</th>
+                        <th style="width:20%">วันที่เผยแพร่</th>
                         <th style="width:20%">วันที่แก้ไข</th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                     </tr>
                     <tr v-for="(research,index) in the_research" :key="index" >
-                        <td>{{ research.r_id }}</td>
+                        <!-- <td>{{ research.r_id }}</td> -->
                         <td>{{research.r_title.slice(0,35)}}</td>
                         <td>{{research.r_create_date}}</td>
                         <td>{{research.r_update_date}}</td>

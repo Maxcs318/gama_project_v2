@@ -22,7 +22,7 @@
     <br>
     <div class="row">
       <div
-        class="col-lg-6 col-12"
+        class="col-lg-6 col-12 hv-eff"
         v-for="(academic_article,index) in the_academic_article"
         :key="index"
         @click="seethisPage(academic_article.aa_id)"
@@ -180,10 +180,6 @@ export default {
 };
 </script>
 <style scoped>
-img {
-  cursor: pointer;
-}
-
 .head {
   position: absolute;
   z-index: 1;

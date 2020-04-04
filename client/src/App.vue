@@ -199,17 +199,34 @@ input[type="password"]:focus {
   box-sizing: border-box;
   border-radius: 5px;
 }
-
 .select:focus {
   background-color: #1a2a3e;
   color: #e0e0e0;
 }
-
 .about-order {
   cursor: pointer;
   color: #eecd02;
 }
 .about-order:hover {
   opacity: 0.7;
+}
+.alert-required{
+  color: red;
+}
+.hv-eff:hover{
+  cursor: pointer;
+  transition: 0.25s;
+  opacity: 0.7;
+}
+.complete-text{
+  color: #4cd137;
+}
+.wait-text{
+  color: #eecd02;
+}
+.video-name:hover{
+  cursor: pointer;
+  transition: 0.25s;
+  color: #eecd02;
 }
 </style>

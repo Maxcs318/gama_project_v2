@@ -4,11 +4,14 @@
             <div class="col-lg-4 col-xs-12"></div>
             <div class="col-lg-4 col-xs-12">
                 <form @submit.prevent="submitPay">  
-                    <h5><center>Order Code : {{Order.o_code_order}} <br> Price : {{Order.o_total_price}} ฿</center></h5>                    
-                    Title
+                    <h5><center>Order Code : {{Order.o_code_order}} <br> Price : {{Order.o_total_price}} ฿</center></h5>    
+                    <br>
+                    <h5>กรุณากรอกข้อมูลใน <b class="alert-required">( * )</b> ให้ครบถ้วน</h5>
+                    <br>
+                    Title <b class="alert-required"> * </b>
                     <input type="text" class="form-control" v-model="money_transfer.mtf_title" required ><br>
                     <div v-if="Payment!=''">
-                        Payment
+                        Payment <b class="alert-required"> * </b>
                         <select class="form-control" v-model="money_transfer.mtf_payments_id" required >
                             <option selected disabled value=""> - - No Select - - </option>
                             <option v-for="(pay ,index) in Payment" :key="index" :value="pay.pm_id" >
@@ -18,7 +21,7 @@
                     </div>
                     <div v-if="money_transfer.mtf_payments_id==1">
                         <br>
-                        Banking
+                        Banking <b class="alert-required"> * </b>
                         <select class="form-control" v-model="money_transfer.mtf_banking_id" required>
                             <option disabled selected value=""> - - No Select - - </option>
                             <option v-for="(bk ,index) in Banking" :key="index" :value="bk.b_id"  @click="select_banking(bk)">
@@ -44,15 +47,17 @@
                                 <img v-if="url"  :src="url" width="100%"/>
                             </center>
                             <br>
-                            <button type="button" class="form-control btn-success col-lg-6" @click="ChooseFilesImage"> Choose Image Slip </button>
+                            <center>
+                                <button type="button" class="form-control btn-success col-lg-7" @click="ChooseFilesImage"> Choose Image Slip <b class="alert-required"> * </b></button>
                             <input id="chooseImage" ref="filesimage" style="display: none;" type="file" @change="handleFilesImage" required>
+                            </center>
                             <br>
                     <p v-if="date_now!=''"> Transfer Date : {{money_transfer.mtf_date}} </p>
                     <date-pick  
                                 size="large" v-model="money_transfer.mtf_date" 
                                 :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
                                 :inputAttributes="{readonly: true}"
-                     ></date-pick>
+                     ></date-pick> <b class="alert-required"> * </b>
                     <br><br>
 
                     Comment

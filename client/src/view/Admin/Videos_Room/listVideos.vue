@@ -11,15 +11,15 @@
             <div class="col-lg-12 col-md-12">
                 <table class="table" style="width:100%" >
                     <tr style="width:100%">
-                        <th style="width:5%">ลำดับ</th>
+                        <!-- <th style="width:5%">ลำดับ</th> -->
                         <th style="width:35%">ชื่อวีดีโอ</th>
-                        <th style="width:20%">วันที่สร้าง</th>
+                        <th style="width:20%">วันที่เผยแพร่</th>
                         <th style="width:20%">วันที่แก้ไข</th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                     </tr>
                     <tr v-for="(list,index) in data_videos" :key="index" >
-                        <td>{{index+1}}</td>
+                        <!-- <td>{{index+1}}</td> -->
                         <td>{{list.v_title.slice(0,25)}}</td>
                         <td>{{list.v_create_date}}</td>
                         <td>{{list.v_update_date}}</td>

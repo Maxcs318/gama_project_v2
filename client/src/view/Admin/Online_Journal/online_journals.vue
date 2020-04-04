@@ -16,15 +16,15 @@
             <div class="col-lg-12 col-xs-12">
                 <table class="table" style="width:100%" >
                     <tr style="width:100%">
-                        <th style="width:5%">ลำดับ</th>
+                        <!-- <th style="width:5%">ลำดับ</th> -->
                         <th style="width:35%">ชื่อวารสารออนไลน์</th>
-                        <th style="width:20%">วันที่สร้าง</th>
+                        <th style="width:20%">วันที่เผยแพร่</th>
                         <th style="width:20%">วันที่แก้ไข</th>
                         <th style="width:10%">  </th>
                         <th style="width:10%">  </th>
                     </tr>
                     <tr v-for="(online_journal,index) in the_online_journal" :key="index">
-                        <td>{{online_journal.oj_id}}</td>
+                        <!-- <td>{{online_journal.oj_id}}</td> -->
                         <td>{{online_journal.oj_title.slice(0,35)}}</td>
                         <td>{{online_journal.oj_create_date}}</td>
                         <td>{{online_journal.oj_update_date}}</td>

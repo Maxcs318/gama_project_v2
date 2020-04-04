@@ -7,11 +7,14 @@
         </h4>
       </div>
     </div>
+    
     <div class="row">
       <div class="col-lg-3 col-xs-12"></div>
       <div class="col-lg-6 col-xs-12">
+        <h5>กรุณากรอกข้อมูลใน <b class="alert-required">( * )</b> ให้ครบถ้วน</h5>
+        <br>
         <form @submit.prevent="submitResearch">
-          หัวข้อ
+          หัวข้อ <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_title"
@@ -19,7 +22,7 @@
             placeholder="หัวข้อ"
             required
           />
-          <br />หัวข้อทางเลือก
+          <br />หัวข้อทางเลือก <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_titlealternative"
@@ -31,7 +34,7 @@
           <!-- Creator
                     <input type="text" v-model="research.r_creator" class="form-control" required>
           <br>-->
-          เรื่อง
+          เรื่อง <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_subject"
@@ -53,7 +56,7 @@
             placeholder="ผู้เผยแพร่"
             rows="3"
           ></textarea>
-          <br />วันที่เผยแพร่
+          <br />วันที่เผยแพร่ <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_createddate"
@@ -61,7 +64,7 @@
             placeholder="วันที่เผยแพร่"
             required
           />
-          <br />วันที่แก้ไข
+          <br />วันที่แก้ไข <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_modifieddate"
@@ -69,7 +72,7 @@
             placeholder="วันที่แก้ไข"
             required
           />
-          <br />วันที่ตีพิมพ์
+          <br />วันที่ตีพิมพ์ <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_issueddate"
@@ -77,7 +80,7 @@
             placeholder="วันที่ตีพิมพ์"
             required
           />
-          <br />ประเภท
+          <br />ประเภท <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_type"
@@ -85,7 +88,7 @@
             placeholder="ประเภท"
             required
           />
-          <br />ขนาด
+          <br />ขนาด <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_format"
@@ -93,7 +96,7 @@
             placeholder="ขนาด"
             required
           />
-          <br />แหล่งข้อมูล
+          <br />แหล่งข้อมูล <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_source"
@@ -101,7 +104,7 @@
             placeholder="แหล่งข้อมูล"
             required
           />
-          <br />ภาษา
+          <br />ภาษา <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_language"
@@ -109,14 +112,14 @@
             placeholder="ภาษา"
             required
           />
-          <br />สิทธิประโยชน์
+          <br />สิทธิประโยชน์ 
           <textarea
             v-model="research.r_rights"
             class="form-control textarea"
             placeholder="สิทธิประโยชน์"
             rows="5"
           ></textarea>
-          <br />สิทธิ์การเข้าถึง ( ** ระดับที่เลือกและระดับที่สูงกว่าจะสามารถเข้าดูได้ )
+          <br />สิทธิ์การเข้าถึง ( ระดับที่เลือกและระดับที่สูงกว่าจะสามารถเข้าดูได้ ) <b class="alert-required"> * </b>
           <select
             v-model="research.r_permission"
             class="form-control select"

@@ -8,12 +8,12 @@
 
         <div class="container">
           <br />
-          <input type="text" v-model="username" placeholder="ชื่อ" name="uname" required />
+          <input type="text" v-model="username" placeholder="Username" name="uname" required />
           <br />
           <input
             type="password"
             v-model="password_normal"
-            placeholder="รหัสผ่าน"
+            placeholder="Password"
             name="psw"
             required
           />
@@ -21,6 +21,10 @@
           <br />
           <center>
             <button type="submit">เข้าสู่ระบบ</button>
+            <br />
+            <router-link to="/register">
+              <a @click="Close_Login">สมัครสมาชิก</a>
+            </router-link>
             <!-- <br /> -->
             <!-- <a href="#" class="forgot-pass">ลืมรหัสผ่าน</a> -->
           </center>
@@ -297,7 +301,7 @@ span.psw {
     height: 100%;
     margin: 0;
   }
-  form{
+  form {
     margin-top: 100px;
   }
   span.psw {

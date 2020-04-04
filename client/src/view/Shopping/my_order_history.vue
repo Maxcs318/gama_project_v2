@@ -19,7 +19,7 @@
                         <th> รหัสใบสั่งซื้อ </th>
                         <th> ราคารวม </th>
                         <th> สถานะใบสั่งซ์้อ </th>
-                        <th> วันที่สร้าง </th>
+                        <th> วันที่เผยแพร่ </th>
                     </tr>
                     <tr v-for="(order,index) in Order" :key="index">
                         <td>{{(data_size- page*data_in_page) - index}}</td>

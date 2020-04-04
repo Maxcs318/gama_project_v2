@@ -11,26 +11,17 @@
           </div>
         </div>
         <div class="row">
-          <div
-            class="col-lg-6 col-md-6"
-            v-for="(product,index) in trainingCourse"
-            :key="index"
-          >
-          <router-link style="text-decoration: none;"  :to="'/product/'+product.p_id">
-            <div class="training-img">
-              <img
-                :src="getImgUrlProduct(product.p_image)"
-                caption="First slide"
-              />
-              <h5
-                class="course-text"
-              >{{product.p_name.slice(0,70)+"..."}}</h5>
-              <p
-                class="course-date"
-                style="text-align: left;"
-              >{{product.p_create_date.slice(0,-13)}}</p>
-            </div>
-          </router-link>
+          <div class="col-lg-6 col-md-6" v-for="(product,index) in trainingCourse" :key="index">
+            <router-link style="text-decoration: none;" :to="'/product/'+product.p_id">
+              <div class="training-img">
+                <img :src="getImgUrlProduct(product.p_image)" caption="First slide" />
+                <h5 class="course-text">{{product.p_name.slice(0,70)+"..."}}</h5>
+                <p
+                  class="course-date"
+                  style="text-align: left;"
+                >{{product.p_create_date.slice(0,-13)}}</p>
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -42,17 +33,16 @@ import axios from "axios";
 export default {
   data() {
     return {
-      data_product:'',
-      data_size:'',
-      data_load:false,
-      data_in_page: 4,
-      
+      data_product: "",
+      data_size: "",
+      data_load: false,
+      data_in_page: 4
     };
   },
   methods: {
     getImgUrlProduct(picP) {
       return this.path_files + "Product/" + picP;
-    },
+    }
     // seethisPageCourse(thisproduct) {
     //   this.$router.push({
     //     name: "product",
@@ -62,16 +52,22 @@ export default {
   },
   computed: {
     trainingCourse() {
-      if(this.data_load==false){
-        axios.get(this.$store.getters.getBase_Url+'Product/get_product/'+this.data_in_page+'/2/1')
-        .then(response => {
-        // console.log(response.data),
-        this.data_size = response.data[0],
-        this.data_product = response.data[1]
-        })
-        this.data_load = true
+      if (this.data_load == false) {
+        axios
+          .get(
+            this.$store.getters.getBase_Url +
+              "Product/get_product/" +
+              this.data_in_page +
+              "/2/1"
+          )
+          .then(response => {
+            // console.log(response.data),
+            (this.data_size = response.data[0]),
+              (this.data_product = response.data[1]);
+          });
+        this.data_load = true;
       }
-      var training_course = this.data_product
+      var training_course = this.data_product;
       return training_course;
     },
     path_files() {
@@ -86,9 +82,10 @@ export default {
 }
 
 .header {
+  text-align: left;
   font-style: normal;
-  margin-bottom: 34px;
   font-weight: 600;
+  margin-bottom: 0px;
   font-size: 29px;
   line-height: 120%;
   color: rgba(255, 255, 255, 0.3);

@@ -18,8 +18,8 @@
           v-for="(product,index) in book"
           :key="index"
         >
-          <img width="100%"
-            class=""
+          <img
+            class="book-img hv-eff"
             :src="getImgUrlProduct(product.p_image)"
             @click="seethisPage(product.p_id)"
           />
@@ -167,7 +167,7 @@ export default {
 </script>
 <style scoped>
 .book-img {
-  width: auto;
+  width: 181px;
   height: 240px;
   display: block;
   margin: 0 auto;
@@ -177,6 +177,7 @@ export default {
   font-weight: 600;
   font-size: 18px;
   line-height: 150%;
+  margin-top: 16px;
   text-align: center;
 }
 .book-price {

@@ -7,11 +7,11 @@
     <div class="row">
       <div class="col-lg-9 col-xs-12"></div>
       <div class="col-lg-3 col-xs-12">
-        <button
+        <!-- <button
           type="button"
           class="form-control btn-primary"
           @click="check_payment"
-        >ตรวจสอบการชำระเงิน</button>
+        >ตรวจสอบการชำระเงิน</button> -->
         <br />
       </div>
     </div>
@@ -20,22 +20,22 @@
         <table class="table" style="width:100%; text-align: center;">
           <tr>
             <th>ลำดับ</th>
-            <th>ไอดีใบสั่งซ์้อ</th>
+            <!-- <th>ไอดีใบสั่งซ์้อ</th> -->
             <th>รหัสใบสั่งซื้อ</th>
             <th>ราคารวม</th>
             <th>สถานะออเดอร์</th>
-            <th>วันที่สร้าง</th>
+            <th>วันที่เผยแพร่</th>
           </tr>
           <tr
             v-for="(order,index) in Order"
             :key="index"
           >
             <td>{{ index+1+(page*data_in_page) }}</td>
-            <td>{{order.o_id}}</td>
+            <!-- <td>{{order.o_id}}</td> -->
             <td @click="seethisOrder(order.o_code_order)">{{order.o_code_order}}</td>
             <td>{{order.o_total_price}}</td>
             <td>
-              <div v-for=" os in Order_Status " v-if="os.os_id == order.o_status_id">{{os.os_title}}</div>
+              <div class="complete-text" v-for=" os in Order_Status " v-if="os.os_id == order.o_status_id">{{os.os_title}}</div>
             </td>
             <td>{{order.o_create_date}}</td>
           </tr>

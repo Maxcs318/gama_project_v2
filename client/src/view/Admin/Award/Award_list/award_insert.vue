@@ -18,13 +18,17 @@
           />
           <br />
           <div class="row">
-            <div class="col-lg-12 col-12">
+            <div class="col-lg-9 col-12">
               บริษัท
               <select v-model="award_list.al_company_id" class="form-control select" required>
                 <option class="option" selected disabled value>เลือก บริษัท</option>
                 <option class="option" v-for="comp in Company" :value="comp.c_id">{{ comp.c_title }}</option>
               </select>
               <br />
+            </div>
+            <div class="col-lg-3">
+              <br>
+              <a @click="addcompany" style="text-align:center;cursor:pointer" class="form-control btn-success col-12">เพิ่มบริษัท</a>
             </div>
             <div class="col-lg-6 col-12">
               ประเภทรางวัล
@@ -80,6 +84,9 @@ export default {
     };
   },
   methods: {
+    addcompany() {
+      this.$router.push("/addcompany");
+    },
     submitAward_List() {
       var jsonAward_list = JSON.stringify(this.award_list);
       var FD = new FormData();
