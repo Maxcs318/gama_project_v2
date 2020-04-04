@@ -67,7 +67,10 @@
           <br />ที่อยู่
           <input type="text" v-model="E_member.m_address" class="form-control" required/>
           <br />
-
+          <!-- Password : {{this_user_edit.m_password}} -->
+          เปลี่ยน หรัสผ่านให้แก่ผู้ใช้
+          <input type="text" v-model="member_new_password" class="form-control"/>
+          <br>
           <!-- <div
             v-for="m_up in Member_Upgrade_Date"
           >
@@ -165,6 +168,7 @@ export default {
       passwordCheck: "",
       url: null,
       fileimage: "",
+      member_new_password:"",
 
       data_member:'',
       data_load_member:false,
@@ -198,7 +202,9 @@ export default {
     },
     submitEditProfile() {
       var chk = md5(this.passwordCheck);
-      
+      if(this.member_new_password != ""){
+        this.E_member.m_password = md5(this.member_new_password)
+      }
         ///////////////////////////////////////////////
     
             var FD = new FormData();
