@@ -81,7 +81,6 @@
             <b-dropdown-item @click="academic_articles">Academic Article</b-dropdown-item>
             <b-dropdown-item @click="online_journals">Online Journal</b-dropdown-item>
             <b-dropdown-item @click="research">Research</b-dropdown-item>
-            <b-dropdown-item @click="awards">Awards Winners</b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item @click="Log_Out">Log Out</b-dropdown-item>
           </b-nav-item-dropdown>

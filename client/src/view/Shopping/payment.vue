@@ -49,10 +49,11 @@
                             <br>
                             <center>
                                 <button type="button" class="form-control btn-success col-lg-7" @click="ChooseFilesImage"> Choose Image Slip <b class="alert-required"> * </b></button>
-                            <input id="chooseImage" ref="filesimage" style="display: none;" type="file" @change="handleFilesImage" required>
+                            <input id="chooseImage" ref="filesimage" style="display: none;" type="file" @change="handleFilesImage" >
                             </center>
                             <br>
-                    <p v-if="date_now!=''"> Transfer Date : {{money_transfer.mtf_date}} </p>
+                    <!-- <p v-if="date_now!=''"> -->
+                    <p > Transfer Date : {{money_transfer.mtf_date}} </p>
                     <date-pick  
                                 size="large" v-model="money_transfer.mtf_date" 
                                 :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
@@ -101,7 +102,7 @@ export default {
             },
             url: null,
             fileimage:'',
-
+            check_image:null,
             data_load: false,
 
             data_order:'',
@@ -140,17 +141,30 @@ export default {
         },
         // submit
         submitPay(){
-            var FD  = new FormData()
-            FD.append('userfile',this.fileimage)
-            FD.append('money_transfer',JSON.stringify(this.money_transfer))
-            FD.append('order',JSON.stringify(this.Order))           
-            FD.append('own_id',JSON.stringify(this.$store.state.log_on))
-            this.$store.dispatch("Money_Transfer_Insert",FD)
-            swal({title: "Confirm Success.",icon: "success",});
+            if(this.fileimage!=''){
+                this.check_image=1
+            }else{
+                this.check_image=null
+            }
+            if(this.check_image != null){
+                if(this.money_transfer.mtf_date != ''){
+                    var FD  = new FormData()
+                    FD.append('userfile',this.fileimage)
+                    FD.append('money_transfer',JSON.stringify(this.money_transfer))
+                    FD.append('order',JSON.stringify(this.Order))           
+                    FD.append('own_id',JSON.stringify(this.$store.state.log_on))
+                    this.$store.dispatch("Money_Transfer_Insert",FD)
+                    swal({title: "Confirm Success.",icon: "success",});
 
-            setTimeout(() => {
-                this.$router.push({name:'order',params:{CodeOrder:this.Order.o_code_order}})
-            },1000);
+                    setTimeout(() => {
+                        this.$router.push({name:'order',params:{CodeOrder:this.Order.o_code_order}})
+                    },1000);
+                }else{
+                    this.$swal("กรุณากรอก วัน,เวลาโอน", "", "error")
+                }
+            }else{
+                this.$swal("กรุณาแนบ สลิป เพื่อเป็นหลักฐาน", "", "error")
+            }
         },
         back_to_see_list(){
             this.$router.go(-1)
@@ -212,12 +226,12 @@ export default {
             var banking_all = this.data_banking_all
             return banking_all 
         },
-        date_now(){
-            var today = new Date();
-            var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+' '+today.getHours() + ":" + today.getMinutes();
-                this.money_transfer.mtf_date = date
-            return date
-        }
+        // date_now(){
+        //     var today = new Date();
+        //     var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+' '+today.getHours() + ":" + today.getMinutes();
+        //         this.money_transfer.mtf_date = date
+        //     return date
+        // }
     }
 }
 </script>
