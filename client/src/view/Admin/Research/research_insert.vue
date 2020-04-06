@@ -56,38 +56,57 @@
             placeholder="ผู้เผยแพร่"
             rows="3"
           ></textarea>
-          <br />วันที่เผยแพร่ <b class="alert-required"> * </b>
-          <input
+          <br />
+          วันที่เผยแพร่ <b class="alert-required"> * </b> <br>
+          <date-pick  style="font-size: 100%;"
+             v-model="research.r_createddate" 
+            :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
+            :inputAttributes="{readonly: true}"
+          ></date-pick>
+          <!-- <input  size="small"
             type="text"
             v-model="research.r_createddate"
             class="form-control"
             placeholder="วันที่เผยแพร่"
             required
-          />
-          <br />วันที่แก้ไข <b class="alert-required"> * </b>
-          <input
+          /> -->
+          <br>
+          <br />วันที่แก้ไข <b class="alert-required"> * </b> <br>
+          <date-pick  style="font-size: 100%;"
+             v-model="research.r_modifieddate" 
+            :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
+            :inputAttributes="{readonly: true}"
+          ></date-pick>
+          <!-- <input
             type="text"
             v-model="research.r_modifieddate"
             class="form-control"
             placeholder="วันที่แก้ไข"
             required
-          />
-          <br />วันที่ตีพิมพ์ <b class="alert-required"> * </b>
-          <input
+          /> -->
+          <br>
+          <br />วันที่ตีพิมพ์ <b class="alert-required"> * </b> <br>
+          <date-pick  style="font-size: 100%;"
+             v-model="research.r_issueddate" 
+            :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
+            :inputAttributes="{readonly: true}"
+          ></date-pick>
+          <!-- <input
             type="text"
             v-model="research.r_issueddate"
             class="form-control"
             placeholder="วันที่ตีพิมพ์"
             required
-          />
-          <br />ประเภท <b class="alert-required"> * </b>
+          /> -->
+          <br>
+          <!-- <br />ประเภท <b class="alert-required"> * </b>
           <input
             type="text"
             v-model="research.r_type"
             class="form-control"
             placeholder="ประเภท"
             required
-          />
+          /> -->
           <br />ขนาด <b class="alert-required"> * </b>
           <input
             type="text"
@@ -189,6 +208,8 @@
 </template>
 <script>
 import axios from "axios";
+import DatePick from 'vue-date-pick';
+
 export default {
   data() {
     return {
@@ -217,6 +238,7 @@ export default {
       data_load:false
     };
   },
+  components: {DatePick},
   methods: {
     // files
     ChooseFiles() {

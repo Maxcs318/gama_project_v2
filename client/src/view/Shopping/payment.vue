@@ -53,12 +53,12 @@
                             </center>
                             <br>
                     <!-- <p v-if="date_now!=''"> -->
-                    <p > Transfer Date : {{money_transfer.mtf_date}} </p>
+                    <p > Transfer Date : {{money_transfer.mtf_date}} <b class="alert-required"> * </b></p>
                     <date-pick  
                                 size="large" v-model="money_transfer.mtf_date" 
                                 :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
                                 :inputAttributes="{readonly: true}"
-                     ></date-pick> <b class="alert-required"> * </b>
+                     ></date-pick> 
                     <br><br>
 
                     Comment

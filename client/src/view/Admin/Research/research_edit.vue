@@ -53,38 +53,53 @@
             placeholder="ผู้เผยแพร่"
             rows="3"
           ></textarea>
-          <br />วันที่เผยแพร่
-          <input
+          <br />วันที่เผยแพร่ <br>
+          <date-pick  style="font-size: 100%;"
+             v-model="researchE.r_createddate" 
+            :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
+            :inputAttributes="{readonly: true}"
+          ></date-pick> <br>
+          <!-- <input
             type="text"
             v-model="researchE.r_createddate"
             class="form-control"
             placeholder="วันที่เผยแพร่"
             required
-          />
-          <br />วันที่แก้ไข
-          <input
+          /> -->
+          <br />วันที่แก้ไข<br>
+          <date-pick  style="font-size: 100%;"
+             v-model="researchE.r_modifieddate" 
+            :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
+            :inputAttributes="{readonly: true}"
+          ></date-pick> <br>
+          <!-- <input
             type="text"
             v-model="researchE.r_modifieddate"
             class="form-control"
             placeholder="วันที่แก้ไข"
             required
-          />
-          <br />วันที่ตีพิมพ์
-          <input
+          /> -->
+          <br />วันที่ตีพิมพ์ <br>
+          <date-pick  style="font-size: 100%;"
+             v-model="researchE.r_issueddate" 
+            :pickTime="true" :format="'DD-MM-YYYY HH:mm'"
+            :inputAttributes="{readonly: true}"
+          ></date-pick> <br>
+          <!-- <input
             type="text"
             v-model="researchE.r_issueddate"
             class="form-control"
             placeholder="วันที่ตีพิมพ์"
             required
-          />
-          <br />ประเภท
+          /> -->
+          <!-- <br />ประเภท
           <input
             type="text"
             v-model="researchE.r_type"
             class="form-control"
             placeholder="ประเภท"
             required
-          />
+          /> -->
           <br />ขนาด
           <input
             type="text"
@@ -200,6 +215,7 @@
 </template>
 <script>
 import axios from "axios";
+import DatePick from 'vue-date-pick';
 export default {
   data() {
     return {
@@ -218,6 +234,7 @@ export default {
       check_delete_file:false
     };
   },
+  components: {DatePick},
   methods: {
     loadFile(fi) {
       return this.path_files + "Research_Files_Upload/" + fi;
