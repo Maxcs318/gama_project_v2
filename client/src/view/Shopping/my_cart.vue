@@ -7,7 +7,7 @@
           <header>รายการสินค้าในตะกร้า</header>
         </div>
         <div class="col-lg-2 col-5">
-          <button type="button" class="form-control btn-warning" @click="page_order">Order</button>
+          <button v-if="the_user" type="button" class="form-control btn-warning" @click="page_order">Order</button>
           <br />
         </div>
       </div>

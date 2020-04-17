@@ -120,6 +120,7 @@ const store = new Vuex.Store({
                 // console.log(user)
                 axios.post(base_url +"User/loadLogin", JSON.stringify(user))
                 .then(response => {
+                    // console.log(response.data)
                     context.commit("Log_On",response.data)
                 })
             }else{

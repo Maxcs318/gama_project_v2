@@ -104,7 +104,26 @@
         
         public function loadLogin(){
             $the_userold = $this->user_model->loadLogin($this->JSON_DATA);
-            echo $the_userold;
+            // echo $the_userold;
+            $the_user_now = json_decode($the_userold);
+            // echo  $the_user_now->m_upgrade_date_id;
+            if($the_user_now->m_type >1 ){
+                $upgrade_date = json_decode($this->user_model->get_member_upgrade_date_by_id($the_user_now->m_upgrade_date_id));
+                
+                $date_end = strtotime($upgrade_date->mud_date_end);
+                $date_now = strtotime(date("d-m-Y H:i:s"));
+                // echo $date_now;
+                // echo ' - > ';
+                // echo $date_end;
+                if($date_end<$date_now){
+                    $the_user_now->m_type = 1;
+                }
+            }
+            if($the_user_now->m_status == 'admin'){
+                $the_user_now->m_type = 3;
+            }
+            $the_user = json_encode($the_user_now);
+            echo $the_user;
         }
         //call by vue 
         public function log_out()

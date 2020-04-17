@@ -2,7 +2,6 @@
     <div class="container ">
         <center><h5> My Profile </h5></center>
         <div class="row" v-if="the_user">
-            <!-- {{Member_Type}} -->
             <div class="col-lg-3 col-xs-12" ></div>      
             <div class="col-lg-6 col-xs-12">
                 <img v-if="the_user.m_imageprofile!=''" :src="getImgUrl(the_user.m_imageprofile)" width="100%">
@@ -11,7 +10,8 @@
                 <div style="text-align: center; " v-if="Member_Upgrade_Date">
                     <div v-if="Member_Type">
                         Member Type : {{Member_Type.mt_name}} <br>
-                        End in : {{Member_Upgrade_Date.mud_date_end}}
+                        
+                        <p v-if="the_user.m_type != 1">End in : {{Member_Upgrade_Date.mud_date_end}}</p>
                     </div>
                     <br>
                 </div>
