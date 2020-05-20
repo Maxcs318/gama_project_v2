@@ -35,35 +35,37 @@
           <div class="col-lg-4 col-0"></div>
 
           <div class="col-lg-12">
-            <p>Bronze</p>
+            <p><br>Silver</p>
           </div>
-          <div class="col-lg-5 col-3"></div>
-          <div class="col-lg-2 col-6">
-            <center>
-              <img class="sponsor-img" :src="path_files+'sponsor_img/sponsor-plat7.png'" alt />
-            </center>
+          <div class="col-lg-4 col-0"></div>
+          <div class="col-lg-4 col-12">
+            <!-- <center> -->
+              <img class="sponsor-img3" :src="path_files+'sponsor_img/sponsor-plat6.png'" alt />
+            <!-- </center> -->
           </div>
-          <div class="col-lg-5 col-3"></div>
+          <div class="col-lg-4 col-0"></div>
 
           <div class="col-lg-12 col-xs-12">
-            <p>Blue</p>
+            <p>Bronze</p>
           </div>
           <div class="col-lg-4 col-0"></div>
-          <div class="col-lg-2 col-6">
-            <img class="sponsor-img" :src="path_files+'sponsor_img/sponsor-plat8.png'" alt />
+          <div class="col-lg-4 col-12">
+            <img class="sponsor-img3" :src="path_files+'sponsor_img/sponsor-plat7.png'" alt />
           </div>
-          <div class="col-lg-2 col-6">
-            <img class="sponsor-img" :src="path_files+'sponsor_img/sponsor-plat9.png'" alt />
-          </div>
-          <div class="col-lg-4 col-0"></div>
           <div class="col-lg-4 col-0"></div>
 
-          <div class="col-lg-2 col-6">
+          <div class="col-lg-4 col-0"></div>
+          <div class="col-lg-4 col-12">
+            <img class="sponsor-img3" :src="path_files+'sponsor_img/sponsor-plat8.png'" alt />
+          </div>
+          <div class="col-lg-4 col-0"></div>
+
+          <!-- <div class="col-lg-2 col-6">
             <img class="sponsor-img2" :src="path_files+'sponsor_img/phyathai_2.png'" alt />
           </div>
           <div class="col-lg-2 col-6">
             <img class="sponsor-img" :src="path_files+'sponsor_img/pro_active.jpg'" alt />
-          </div>
+          </div> -->
 
           <div class="col-lg-4 col-0"></div>
         </div>
@@ -118,6 +120,16 @@ export default {
 }
 
 .sponsor-img2 {
+  width: 250px;
+  height: auto;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 49px;
+
+}
+
+.sponsor-img3 {
   width: 158px;
   height: auto;
   display: block;
@@ -127,12 +139,18 @@ export default {
 
 }
 
+
+
 @media only screen and (max-width: 600px) {
   .sponsor-img {
     width: 100%;
     height: auto;
   }
   .sponsor-img2 {
+    width: 100%;
+    height: auto;
+  }
+  .sponsor-img3 {
     width: 100%;
     height: auto;
   }
