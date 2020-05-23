@@ -26,12 +26,12 @@
             <p>Gold</p>
           </div>
           <div class="col-lg-4 col-0"></div>
-          <div class="col-lg-4 col-12">
+          <div class="col-lg-3 col-12">
             <img class="sponsor-img2" :src="path_files+'sponsor_img/sponsor-plat5.png'"/>
           </div>
-          <!-- <div class="col-lg-2 col-6">
-            <img class="sponsor-img" :src="path_files+'sponsor_img/sponsor-plat6.png'" alt />
-          </div> -->
+          <div class="col-lg-1 col-12">
+            <img class="sponsor-img4" :src="path_files+'sponsor_img/sponsor-plat5-2.png'"/>
+          </div>
           <div class="col-lg-4 col-0"></div>
 
           <div class="col-lg-12">
@@ -40,7 +40,7 @@
           <div class="col-lg-4 col-0"></div>
           <div class="col-lg-4 col-12">
             <!-- <center> -->
-              <img class="sponsor-img3" :src="path_files+'sponsor_img/sponsor-plat6.png'" alt />
+              <img class="sponsor-img5" :src="path_files+'sponsor_img/sponsor-plat6.png'" alt />
             <!-- </center> -->
           </div>
           <div class="col-lg-4 col-0"></div>
@@ -50,13 +50,13 @@
           </div>
           <div class="col-lg-4 col-0"></div>
           <div class="col-lg-4 col-12">
-            <img class="sponsor-img3" :src="path_files+'sponsor_img/sponsor-plat7.png'" alt />
+            <img class="sponsor-img6" :src="path_files+'sponsor_img/sponsor-plat7.png'" alt />
           </div>
           <div class="col-lg-4 col-0"></div>
 
           <div class="col-lg-4 col-0"></div>
           <div class="col-lg-4 col-12">
-            <img class="sponsor-img3" :src="path_files+'sponsor_img/sponsor-plat8.png'" alt />
+            <img class="sponsor-img6" :src="path_files+'sponsor_img/sponsor-plat8.png'" alt />
           </div>
           <div class="col-lg-4 col-0"></div>
 
@@ -139,18 +139,62 @@ export default {
 
 }
 
+.sponsor-img4 {
+  width: 140px;
+  height: auto;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 49px;
 
+}
+
+.sponsor-img5 {
+  width: 350px;
+  height: auto;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 0px;
+
+}
+
+.sponsor-img6 {
+  width: 270px;
+  height: auto;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 49px;
+
+}
 
 @media only screen and (max-width: 600px) {
   .sponsor-img {
     width: 100%;
     height: auto;
   }
+
   .sponsor-img2 {
     width: 100%;
     height: auto;
   }
+
   .sponsor-img3 {
+    width: 100%;
+    height: auto;
+  }
+
+  .sponsor-img4 {
+    width: 50%;
+    height: auto;
+  }
+  
+  .sponsor-img5 {
+    width: 100%;
+    height: auto;
+  }
+  .sponsor-img6 {
     width: 100%;
     height: auto;
   }
