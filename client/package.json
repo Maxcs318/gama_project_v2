@@ -23,7 +23,7 @@
     "vue-carousel": "^0.18.0",
     "vue-date-pick": "^1.2.1",
     "vue-fixed-header": "^3.2.2",
-    "vue-moment": "^4.0.0",
+    "vue-moment": "^4.1.0",
     "vue-navigation-bar": "^2.0.0",
     "vue-router": "^3.0.6",
     "vue-session": "^1.0.0",
